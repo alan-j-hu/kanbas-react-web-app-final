@@ -231,6 +231,12 @@ tag to tell browsers to render the gaps.
             value="2000-01-21"/><br/>
         </form>
       </div>
+      <h4>Anchor tag</h4>
+      Please
+      <a id="wd-lipsum" href="https://www.lipsum.com">click here</a>
+      to get dummy text<br/>
+      <a id="wd-github" href="https://github.com/alan-j-hu/kanbas-react-web-app">click here</a>
+      to go to GitHub<br/>
     </div>
   );
 }
