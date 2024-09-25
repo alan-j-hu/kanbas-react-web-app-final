@@ -4,6 +4,8 @@ export default function Lab1() {
       Name: Alan Hu<br/>
       GitHub: https://github.com/alan-j-hu/kanbas-react-web-app<br/>
       Section: Tuesday/Friday 3:25 PM<br/>
+      Kanbas: https://a1--resonant-hotteok-d91d9a.netlify.app/#/Kanbas<br/>
+      Lab: https://a1--resonant-hotteok-d91d9a.netlify.app/#/Labs/Lab1<br/>
       <h2>Lab 1</h2>
       <h3>HTML Examples</h3>
       <div id="wd-h-tag">
