@@ -1,6 +1,9 @@
 export default function Lab1() {
   return (
     <div id="wd-lab1">
+      Name: Alan Hu<br/>
+      GitHub: https://github.com/alan-j-hu/kanbas-react-web-app<br/>
+      Section: Tuesday/Friday 3:25 PM<br/>
       <h2>Lab 1</h2>
       <h3>HTML Examples</h3>
       <div id="wd-h-tag">
