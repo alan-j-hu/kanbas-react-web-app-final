@@ -23,13 +23,13 @@ export default function Dashboard() {
         <div className="wd-dashboard-course">
           <Link className="wd-dashboard-course-link"
                 to="/Kanbas/Courses/1234/Home">
-            <img src="/images/reactjs.jpg" width={200} />
+            <img src="/images/Video_Game_Championships_logo.png" width={200} />
             <div>
               <h5>
-                 CS1234 React JS
+                 POKE1996 Pokemon VGC
               </h5>
               <p className="wd-dashboard-course-title">
-                Full Stack software developer
+                Competitive Pokemon Battling
               </p>
               <button> Go </button>
             </div>
@@ -38,13 +38,13 @@ export default function Dashboard() {
         <div className="wd-dashboard-course">
           <Link className="wd-dashboard-course-link"
                 to="/Kanbas/Courses/1234/Home">
-            <img src="/images/reactjs.jpg" width={200} />
+            <img src="/images/1200px-Racket-logo.svg_-1024x1024.png" width={200} />
             <div>
               <h5>
-                 CS1234 React JS
+                 CS2500 Fundies
               </h5>
               <p className="wd-dashboard-course-title">
-                Full Stack software developer
+                Fundamentals of Computer Science
               </p>
               <button> Go </button>
             </div>
@@ -53,13 +53,13 @@ export default function Dashboard() {
         <div className="wd-dashboard-course">
           <Link className="wd-dashboard-course-link"
                 to="/Kanbas/Courses/1234/Home">
-            <img src="/images/reactjs.jpg" width={200} />
+            <img src="/images/CuboRubik.png" width={200} />
             <div>
               <h5>
-                 CS1234 React JS
+                 MATH3175 Group Theory
               </h5>
               <p className="wd-dashboard-course-title">
-                Full Stack software developer
+                Group Theory
               </p>
               <button> Go </button>
             </div>
@@ -68,13 +68,13 @@ export default function Dashboard() {
         <div className="wd-dashboard-course">
           <Link className="wd-dashboard-course-link"
                 to="/Kanbas/Courses/1234/Home">
-            <img src="/images/reactjs.jpg" width={200} />
+            <img src="/images/heliana.jpg" width={200} />
             <div>
               <h5>
-                 CS1234 React JS
+                 CAT1234 Cat Language
               </h5>
               <p className="wd-dashboard-course-title">
-                Full Stack software developer
+                Mrrp
               </p>
               <button> Go </button>
             </div>
@@ -83,13 +83,13 @@ export default function Dashboard() {
         <div className="wd-dashboard-course">
           <Link className="wd-dashboard-course-link"
                 to="/Kanbas/Courses/1234/Home">
-            <img src="/images/reactjs.jpg" width={200} />
+            <img src="/images/Linear_RGB_color_wheel.png" width={200} />
             <div>
               <h5>
-                 CS1234 React JS
+                 ART101 Intro to Art
               </h5>
               <p className="wd-dashboard-course-title">
-                Full Stack software developer
+                Introduction to Art and Composition
               </p>
               <button> Go </button>
             </div>
@@ -98,13 +98,13 @@ export default function Dashboard() {
         <div className="wd-dashboard-course">
           <Link className="wd-dashboard-course-link"
                 to="/Kanbas/Courses/1234/Home">
-            <img src="/images/reactjs.jpg" width={200} />
+            <img src="/images/cpp_logo.png" width={200} />
             <div>
               <h5>
-                 CS1234 React JS
+                 CS679 C++ Programming
               </h5>
               <p className="wd-dashboard-course-title">
-                Full Stack software developer
+                Intro to Modern C++
               </p>
               <button> Go </button>
             </div>
