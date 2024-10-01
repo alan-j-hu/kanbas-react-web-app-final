@@ -9,6 +9,9 @@ import Positions from "./Positions";
 import Zindex from "./Zindex";
 import Float from "./Float";
 import GridLayout from "./GridLayout";
+import Flex from "./Flex";
+import BootstrapGrids from "./BootstrapGrids";
+import ScreenSizeLabel from "./ScreenSizeLabel";
 
 export default function Lab2() {
   return (
@@ -55,7 +58,19 @@ Here's another paragraph using a different ID and a different look and
       <Zindex/>
       <Float/>
       <GridLayout/>
+      <div className="flex-container">
+        <div className="flex-box flex-box-1">Box 1</div>
+        <div className="flex-box flex-box-2">
+            Box 2 Box 2<br/>Box 2 Box 2
+        </div>
+        <div className="flex-box flex-box-3">
+            Box 3 Box 3 Box 3<br/>Box 3 Box 3 Box 3<br/>Box 3 Box 3
+        </div>
+      </div>
 
+      <Flex/>
+      <BootstrapGrids/>
+      <ScreenSizeLabel/>
     </div>
   );
 }
