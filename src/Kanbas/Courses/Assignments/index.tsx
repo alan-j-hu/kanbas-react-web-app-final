@@ -59,7 +59,7 @@ export default function Assignments() {
           <div className="d-flex align-items-center wd-title p-3 ps-2 bg-secondary">
             <BsGripVertical className="me-2 fs-3" />
             <div className="flex-grow-1">Week 1</div>
-            <div className="border-5 m-2 rounded-2 circular-border">40% of Total</div>
+            <div className="border border-dark m-2 p-2 rounded-5">40% of Total</div>
             <ModuleControlButtons/>
           </div>
           <ul id="wd-assignment-list" className="list-group rounded-0">
