@@ -1,4 +1,4 @@
-import { BsGripVertical } from "react-icons/bs"
+import { BsGripVertical, BsSearch } from "react-icons/bs"
 import { FaPlus } from "react-icons/fa6";
 import { PiNotePencilBold } from "react-icons/pi";
 import LessonControlButtons from "../Modules/LessonControlButtons"
@@ -30,9 +30,9 @@ function Control() {
       <div className="row">
         <div className="col-2">
           <div className="input-group w-20">
-            <div className="input-group-prepend">
-              <span className="input-group-text" id="basic-addon1">@</span>
-            </div>
+            <span className="input-group-text">
+              <BsSearch/>
+            </span>
             <input type="text" className="form-control" placeholder="Search..."/>
           </div>
         </div>
