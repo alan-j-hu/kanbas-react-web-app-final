@@ -7,17 +7,20 @@ import ModuleControlButtons from "../Modules/ModuleControlButtons";
 import * as db from "../../Database";
 
 function Assignment(props: any) {
+  const start = new Date(props.start);
+  const due = new Date(props.due);
+  const options: Intl.DateTimeFormatOptions = { 'month': 'short', day: '2-digit' };
   return (
     <li className="wd-assignment-list-item list-group-item p-3 ps-1">
       <div className="d-flex align-items-center">
         <BsGripVertical className="me-2 fs-3" />
         <PiNotePencilBold className="me-2"/>
         <div className="d-inline-block flex-grow-1">
-          <Link to={`/Kanbas/Courses/${props.cid}/${props._id}/editor`}>
+          <Link to={`/Kanbas/Courses/${props.cid}/Assignments/${props._id}/Editor`}>
             {props._id} | {props.title}
           </Link><br/>
-          <a>Multiple modules</a> | <strong>Not available until </strong> {props.start} |
-          Due {props.due} | 100pts
+          <a>Multiple modules</a> | <strong>Not available until </strong> {start.toLocaleString('en-US', options)} |
+          Due {due.toLocaleString('en-US', options)} | {props.points}pts
         </div>
         <div>
           <LessonControlButtons/>

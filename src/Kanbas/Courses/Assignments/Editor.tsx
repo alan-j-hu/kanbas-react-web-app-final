@@ -1,13 +1,18 @@
+import { assignments } from "../../Database";
+import { Routes, Route, Navigate, useParams } from "react-router";
+
 export default function AssignmentEditor() {
+  const { aid } = useParams();
+  const assignment = assignments.find((assignment: any) => assignment._id === aid);
   return (
     <div id="wd-assignments-editor">
       <div className="mb-3">
         <label htmlFor="wd-name">Assignment Name</label>
-        <input id="wd-name" className="form-control" value="A1 - ENV + HTML" />
+        <input id="wd-name" className="form-control" value={assignment && assignment.title} />
       </div>
       <div className="mb-3">
         <textarea id="wd-description" className="form-control">
-          The assignment is available online Submit a link to the landing page of
+          {assignment && assignment.description}
         </textarea>
       </div>
       <br />
@@ -17,7 +22,7 @@ export default function AssignmentEditor() {
             <label htmlFor="wd-points">Points</label>
           </div>
           <div className="col-sm-2">
-            <input id="wd-points" className="form-control" value={100} />
+            <input id="wd-points" className="form-control" value={assignment && assignment.points} />
           </div>
         </div>
         <div className="row mb-3">
@@ -78,20 +83,19 @@ export default function AssignmentEditor() {
             <label htmlFor="wd-due-date">Due</label><br />
             <input className="form-control" type="date"
               id="wd-due-date"
-              value="2024-05-13"/><br/>
+              value={assignment && assignment.due}/><br/>
 
             <div className="row">
               <div className="col">
                 <label htmlFor="wd-available-from">Available from</label><br />
                 <input type="date" className="form-control"
                   id="wd-available-from"
-                  value="2024-05-06"/><br/>
+                  value={assignment && assignment.start}/><br/>
               </div>
               <div className="col">
                 <label htmlFor="wd-available-until">Until</label><br />
                 <input type="date" className="form-control"
-                  id="wd-available-until"
-                  value="2024-05-20"/><br/>
+                  id="wd-available-until"/><br/>
               </div>
             </div>
           </div>

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import * as db from "./Database";
 export default function Dashboard() {
   const courses = db.courses;
+  const fallback = "reactjs.jpg";
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
@@ -13,7 +14,7 @@ export default function Dashboard() {
               <div className="card rounded-3 overflow-hidden">
                 <Link to={`/Kanbas/Courses/${course._id}/Home`}
                       className="wd-dashboard-course-link text-decoration-none text-dark" >
-                  <img src="/images/reactjs.jpg" width="100%" height={160} />
+                  <img src={`/images/${course.image || fallback}`} width="100%" height={160} />
                   <div className="card-body">
                     <h5 className="wd-dashboard-course-title card-title">
                       {course.name} </h5>
