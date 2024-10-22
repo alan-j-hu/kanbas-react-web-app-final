@@ -1,9 +1,10 @@
 import { BsGripVertical } from "react-icons/bs"
 import { FaPlus } from "react-icons/fa6";
 import { PiNotePencilBold } from "react-icons/pi";
-import LessonControlButtons from "../Modules/LessonControlButtons"
-import ModuleControlButtons from "../Modules/ModuleControlButtons"
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import LessonControlButtons from "../Modules/LessonControlButtons";
+import ModuleControlButtons from "../Modules/ModuleControlButtons";
+import * as db from "../../Database";
 
 function Assignment(props: any) {
   return (
@@ -12,9 +13,11 @@ function Assignment(props: any) {
         <BsGripVertical className="me-2 fs-3" />
         <PiNotePencilBold className="me-2"/>
         <div className="d-inline-block flex-grow-1">
-          {props.name}<br/>
-          <a>Multiple modules</a> | <strong>Not available until </strong> {props.startDate} |
-          Due {props.dueDate} | 100pts
+          <Link to={`/Kanbas/Courses/${props.cid}/${props._id}/editor`}>
+            {props._id} | {props.title}
+          </Link><br/>
+          <a>Multiple modules</a> | <strong>Not available until </strong> {props.start} |
+          Due {props.due} | 100pts
         </div>
         <div>
           <LessonControlButtons/>
@@ -51,6 +54,8 @@ function Control() {
 }
 
 export default function Assignments() {
+  const { cid } = useParams();
+  const assignments = db.assignments.filter((assignment: any) => assignment.course == cid);
   return (
     <div id="wd-assignments">
       <Control/><br/><br/><br/><br/>
@@ -63,9 +68,8 @@ export default function Assignments() {
             <ModuleControlButtons/>
           </div>
           <ul id="wd-assignment-list" className="list-group rounded-0">
-            <Assignment name="A1" startDate="May 6 at 12:00am" dueDate="May 13 at 11:59pm"/>
-            <Assignment name="A2" startDate="May 13 at 12:00am" dueDate="May 20 at 11:59pm"/>
-            <Assignment name="A3" startDate="May 20 at 12:00am" dueDate="May 27 at 11:59pm"/>
+            {assignments.map((assignment: any) =>
+              <Assignment {...assignment} cid={cid}/>)}
           </ul>
         </li>
       </ul>
