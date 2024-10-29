@@ -6,6 +6,11 @@ import BooleanStateVariables from "./BooleanStateVariables";
 import StringStateVariables from "./StringStateVariables";
 import ObjectStateVariable from "./ObjectStateVariable";
 import ArrayStateVariable from "./ArrayStateVariable";
+import ParentStateComponent from "./ParentStateComponent";
+import HelloRedux from "./ReduxExamples/HelloRedux";
+import CounterRedux from "./ReduxExamples/CounterRedux";
+import AddRedux from "./ReduxExamples/AddRedux";
+import TodoList from "./ReduxExamples/todos/TodoList";
 
 export default function Lab4() {
   function sayHello() {
@@ -22,6 +27,11 @@ export default function Lab4() {
       <StringStateVariables/>
       <ObjectStateVariable/>
       <ArrayStateVariable/>
+      <ParentStateComponent/>
+      <HelloRedux/>
+      <CounterRedux/>
+      <AddRedux/>
+      <TodoList/>
     </div>
   );
 }
