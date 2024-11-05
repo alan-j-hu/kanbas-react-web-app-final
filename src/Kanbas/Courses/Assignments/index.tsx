@@ -1,15 +1,17 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BsGripVertical, BsSearch } from "react-icons/bs"
 import { FaPlus } from "react-icons/fa6";
 import { PiNotePencilBold } from "react-icons/pi";
 import { Link, useParams } from "react-router-dom";
-import LessonControlButtons from "../Modules/LessonControlButtons";
 import AssignmentControlButtons from "./AssignmentControlButtons";
-import * as db from "../../Database";
+import AssignmentHeaderControlButtons from "./AssignmentHeaderControlButtons";
+import { deleteAssignment } from "./reducer";
 
-function Assignment(props: any) {
-  const start = new Date(props.start);
-  const due = new Date(props.due);
+function Assignment({ assignment }: { assignment: any }) {
+  const dispatch = useDispatch();
+
+  const start = new Date(assignment.start);
+  const due = new Date(assignment.due);
   const options: Intl.DateTimeFormatOptions = { 'month': 'short', day: '2-digit' };
   return (
     <li className="wd-assignment-list-item list-group-item p-3 ps-1">
@@ -17,14 +19,14 @@ function Assignment(props: any) {
         <BsGripVertical className="me-2 fs-3" />
         <PiNotePencilBold className="me-2"/>
         <div className="d-inline-block flex-grow-1">
-          <Link to={`/Kanbas/Courses/${props.cid}/Assignments/${props._id}/Editor`}>
-            {props._id} | {props.title}
+          <Link to={`/Kanbas/Courses/${assignment.course}/Assignments/${assignment._id}/Editor`}>
+            {assignment._id} | {assignment.title}
           </Link><br/>
           <a>Multiple modules</a> | <strong>Not available until </strong> {start.toLocaleString('en-US', options)} |
-          Due {due.toLocaleString('en-US', options)} | {props.points}pts
+          Due {due.toLocaleString('en-US', options)} | {assignment.points}pts
         </div>
         <div>
-          <LessonControlButtons/>
+          <AssignmentControlButtons deleteAssignment={() => dispatch(deleteAssignment(assignment._id))}/>
         </div>
       </div>
     </li>
@@ -69,11 +71,11 @@ export default function Assignments() {
             <BsGripVertical className="me-2 fs-3" />
             <div className="flex-grow-1">Week 1</div>
             <div className="border border-dark m-2 p-2 rounded-5">40% of Total</div>
-            <AssignmentControlButtons/>
+            <AssignmentHeaderControlButtons/>
           </div>
           <ul id="wd-assignment-list" className="list-group rounded-0">
             {assignments.map((assignment: any) =>
-              <Assignment {...assignment} cid={cid}/>)}
+              <Assignment assignment={assignment}/>)}
           </ul>
         </li>
       </ul>
