@@ -3,7 +3,7 @@ import { FaPlus } from "react-icons/fa6";
 import { PiNotePencilBold } from "react-icons/pi";
 import { Link, useParams } from "react-router-dom";
 import LessonControlButtons from "../Modules/LessonControlButtons";
-import ModuleControlButtons from "../Modules/ModuleControlButtons";
+import AssignmentControlButtons from "./AssignmentControlButtons";
 import * as db from "../../Database";
 
 function Assignment(props: any) {
@@ -68,7 +68,7 @@ export default function Assignments() {
             <BsGripVertical className="me-2 fs-3" />
             <div className="flex-grow-1">Week 1</div>
             <div className="border border-dark m-2 p-2 rounded-5">40% of Total</div>
-            <ModuleControlButtons/>
+            <AssignmentControlButtons/>
           </div>
           <ul id="wd-assignment-list" className="list-group rounded-0">
             {assignments.map((assignment: any) =>
