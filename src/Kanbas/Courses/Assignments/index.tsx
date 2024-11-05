@@ -74,8 +74,10 @@ export default function Assignments() {
             <AssignmentHeaderControlButtons/>
           </div>
           <ul id="wd-assignment-list" className="list-group rounded-0">
-            {assignments.map((assignment: any) =>
-              <Assignment assignment={assignment}/>)}
+            {assignments
+              .filter((assignment: any) => assignment.course === cid)
+              .map((assignment: any) =>
+                <Assignment assignment={assignment}/>)}
           </ul>
         </li>
       </ul>
