@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import * as db from "./Database";
+
 export default function Dashboard(
 { courses, course, setCourse, addNewCourse,
   deleteCourse, updateCourse }: {
@@ -13,9 +14,9 @@ export default function Dashboard(
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const { enrollments } = db;
-  return (
-    <div id="wd-dashboard">
-      <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
+
+  const newCourse = currentUser.role === "FACULTY"
+    ? <>
       <h5>New Course
           <button className="btn btn-primary float-end"
                   id="wd-add-new-course-click"
@@ -26,6 +27,29 @@ export default function Dashboard(
       <textarea defaultValue={course.description} className="form-control"
              onChange={(e) => setCourse({ ...course, description: e.target.value }) } />
       <hr />
+    </>
+    : <></>;
+
+  const deleteUpdate = currentUser.role === "FACULTY"
+    ? <>
+        <button onClick={(event) => {
+                  event.preventDefault();
+                  deleteCourse(course._id);
+                }} className="btn btn-danger float-end"
+                id="wd-delete-course-click">
+          Delete
+        </button>
+        <button className="btn btn-warning float-end me-2"
+                onClick={updateCourse} id="wd-update-course-click">
+          Update
+        </button>
+      </>
+    : <></>;
+
+  return (
+    <div id="wd-dashboard">
+      <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
+      {newCourse}
 
       <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> <hr />
       <div id="wd-dashboard-courses" className="row">
@@ -49,17 +73,7 @@ export default function Dashboard(
                       <p className="wd-dashboard-course-title card-text overflow-y-hidden" style={{ maxHeight: 100 }}>
                         {course.description} </p>
                       <button className="btn btn-primary"> Go </button>
-                      <button onClick={(event) => {
-                                event.preventDefault();
-                                deleteCourse(course._id);
-                              }} className="btn btn-danger float-end"
-                              id="wd-delete-course-click">
-                              Delete
-                      </button>
-                      <button className="btn btn-warning float-end me-2"
-                              onClick={updateCourse} id="wd-update-course-click">
-                        Update
-                      </button>
+                      {deleteUpdate}
                     </div>
                   </Link>
                 </div>
