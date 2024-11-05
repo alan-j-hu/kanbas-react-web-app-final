@@ -2,12 +2,42 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Routes, Route, Navigate, useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
-import { updateAssignment } from "./reducer";
+import { addAssignment, updateAssignment } from "./reducer";
 
 export default function AssignmentEditor() {
-  const { aid } = useParams();
   const { assignments } = useSelector((state: any) => state.assignmentsReducer);
-  const assignment = assignments.find((assignment: any) => assignment._id === aid);
+  const { cid, aid } = useParams();
+  var assignment = assignments.find((assignment: any) => assignment._id === aid);
+
+  type Assignment = {
+      title: String,
+      "course": String,
+      "start": String,
+      "due": String,
+      "until": String,
+      "points": number,
+      "description": String
+  };
+
+  var update = (assignment : Assignment) => {
+    dispatch(updateAssignment(assignment));
+  };
+  if (aid === undefined || assignment === undefined) {
+    assignment = {
+      "title": "Title",
+      "course": cid,
+      "start": "2024-01-01",
+      "due": "2024-01-01",
+      "until": "2024-01-01",
+      "points": 0,
+      "description": "Description"
+    };
+
+    update = (assignment: Assignment) => {
+      dispatch(addAssignment(assignment));
+    };
+  }
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -126,7 +156,7 @@ export default function AssignmentEditor() {
             Cancel
           </Link>
           <button onClick={() => {
-              dispatch(updateAssignment({
+              update({
                 ...assignment,
                 title,
                 start,
@@ -134,7 +164,7 @@ export default function AssignmentEditor() {
                 until,
                 points,
                 description,
-              }));
+              });
               navigate(`/Kanbas/Courses/${assignment.course}/Assignments`);
             }}
             type="button" className="btn btn-danger">

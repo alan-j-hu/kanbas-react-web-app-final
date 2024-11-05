@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import { BsGripVertical, BsSearch } from "react-icons/bs"
 import { FaPlus } from "react-icons/fa6";
 import { PiNotePencilBold } from "react-icons/pi";
@@ -30,7 +31,7 @@ function Assignment(props: any) {
   );
 }
 
-function Control() {
+function Control(props : { cid: String | undefined }) {
   return (
     <div id="wd-modules-controls">
       <div className="row">
@@ -43,7 +44,7 @@ function Control() {
           </div>
         </div>
         <div className="col-10">
-          <Link id="wd-add-assignment" className="btn btn-lg btn-danger me-1 float-end" to="/Kanbas/Courses/1234/Assignments/Editor">
+          <Link id="wd-add-assignment" className="btn btn-lg btn-danger me-1 float-end" to={`/Kanbas/Courses/${props.cid}/Assignments/Editor`}>
             <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
             Assignment
           </Link>
@@ -58,10 +59,10 @@ function Control() {
 
 export default function Assignments() {
   const { cid } = useParams();
-  const assignments = db.assignments.filter((assignment: any) => assignment.course == cid);
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
   return (
     <div id="wd-assignments">
-      <Control/><br/><br/><br/><br/>
+      <Control cid={cid}/><br/><br/><br/><br/>
       <ul id="wd-modules" className="list-group rounded-0">
         <li className="wd-module list-group-item p-0 mb-5 fs-5 border-gray">
           <div className="d-flex align-items-center wd-title p-3 ps-2 bg-secondary">
