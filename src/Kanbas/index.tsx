@@ -11,6 +11,8 @@ import { enroll, unenroll } from "./Enrollments/reducer"
 import { useState } from "react";
 
 export default function Kanbas() {
+  const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
+
   const [courses, setCourses] = useState<any[]>(db.courses);
   const [course, setCourse] = useState<any>({
     _id: "1234", name: "New Course", number: "New Number",
@@ -34,6 +36,11 @@ export default function Kanbas() {
     );
   };
 
+  const testEnrollment = (currentUser: any, params: any) => {
+    const { cid } = params;
+    return enrollments.some((enrollment: any) => enrollment.course === cid);
+  };
+
   return (
     <div id="wd-kanbas">
       <KanbasNavigation />
@@ -42,7 +49,7 @@ export default function Kanbas() {
           <Route path="/" element={<Navigate to="Account" />} />
           <Route path="/Account/*" element={<Account />} />
           <Route path="/Dashboard" element={
-            <ProtectedRoute>
+            <ProtectedRoute fallback="/Kanbas/Account/Signin">
               <Dashboard
                 courses={courses}
                 course={course}
@@ -53,8 +60,10 @@ export default function Kanbas() {
             </ProtectedRoute>
           } />
           <Route path="/Courses/:cid/*" element={
-            <ProtectedRoute>
-              <Courses courses={courses}/>
+            <ProtectedRoute fallback="/Kanbas/Account/Signin">
+              <ProtectedRoute fallback="/Kanbas/Dashboard" pred={testEnrollment}>
+                <Courses courses={courses}/>
+              </ProtectedRoute>
             </ProtectedRoute>
           } />
           <Route path="/Calendar" element={<h1>Calendar</h1>} />
