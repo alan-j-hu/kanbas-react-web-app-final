@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import { FaTrash } from "react-icons/fa6";
 import { IoEllipsisVertical } from "react-icons/io5";
 import GreenCheckmark from "../Modules/GreenCheckmark";
@@ -25,10 +26,15 @@ function DeleteAssignmentDialog({ deleteAssignment } : { deleteAssignment : () =
 }
 
 export default function AssignmentControlButtons({ deleteAssignment } : { deleteAssignment : () => void }) {
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+
   return (
     <div className="float-end">
       <GreenCheckmark />
-      <FaTrash data-bs-toggle="modal" data-bs-target="#wd-delete-assignment-dialog"/>
+      { currentUser && currentUser.role === "FACULTY"
+          ? <>
+              <FaTrash data-bs-toggle="modal" data-bs-target="#wd-delete-assignment-dialog"/>
+          </> : <></> }
       <IoEllipsisVertical className="fs-4" />
       <DeleteAssignmentDialog deleteAssignment={deleteAssignment}/>
     </div>
