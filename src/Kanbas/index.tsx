@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import Account from "./Account";
+import Session from "./Account/Session";
 import ProtectedRoute from "./Account/ProtectedRoute";
 import Dashboard from "./Dashboard";
 import KanbasNavigation from "./Navigation";
@@ -42,34 +43,36 @@ export default function Kanbas() {
   };
 
   return (
-    <div id="wd-kanbas">
-      <KanbasNavigation />
-      <div className="wd-main-content-offset p-3">
-        <Routes>
-          <Route path="/" element={<Navigate to="Account" />} />
-          <Route path="/Account/*" element={<Account />} />
-          <Route path="/Dashboard" element={
-            <ProtectedRoute fallback="/Kanbas/Account/Signin">
-              <Dashboard
-                courses={courses}
-                course={course}
-                setCourse={setCourse}
-                addNewCourse={addNewCourse}
-                deleteCourse={deleteCourse}
-                updateCourse={updateCourse}/>
-            </ProtectedRoute>
-          } />
-          <Route path="/Courses/:cid/*" element={
-            <ProtectedRoute fallback="/Kanbas/Account/Signin">
-              <ProtectedRoute fallback="/Kanbas/Dashboard" pred={testEnrollment}>
-                <Courses courses={courses}/>
+    <Session>
+      <div id="wd-kanbas">
+        <KanbasNavigation />
+        <div className="wd-main-content-offset p-3">
+          <Routes>
+            <Route path="/" element={<Navigate to="Account" />} />
+            <Route path="/Account/*" element={<Account />} />
+            <Route path="/Dashboard" element={
+              <ProtectedRoute fallback="/Kanbas/Account/Signin">
+                <Dashboard
+                  courses={courses}
+                  course={course}
+                  setCourse={setCourse}
+                  addNewCourse={addNewCourse}
+                  deleteCourse={deleteCourse}
+                  updateCourse={updateCourse}/>
               </ProtectedRoute>
-            </ProtectedRoute>
-          } />
-          <Route path="/Calendar" element={<h1>Calendar</h1>} />
-          <Route path="/Inbox" element={<h1>Inbox</h1>} />
-        </Routes>
+            } />
+            <Route path="/Courses/:cid/*" element={
+              <ProtectedRoute fallback="/Kanbas/Account/Signin">
+                <ProtectedRoute fallback="/Kanbas/Dashboard" pred={testEnrollment}>
+                  <Courses courses={courses}/>
+                </ProtectedRoute>
+              </ProtectedRoute>
+            } />
+            <Route path="/Calendar" element={<h1>Calendar</h1>} />
+            <Route path="/Inbox" element={<h1>Inbox</h1>} />
+          </Routes>
+        </div>
       </div>
-    </div>
+    </Session>
   );
 }
