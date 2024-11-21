@@ -9,7 +9,7 @@ export default function Landing() {
         <li>GitHub: https://github.com/alan-j-hu/kanbas-react-web-app</li>
         <li>Section: Tuesday/Friday 3:25 PM</li>
         <li><Link to="/Kanbas">Kanbas</Link></li>
-        <li><Link to="/Labs/Lab4/">Lab 4</Link></li>
+        <li><Link to="/Labs/Lab5/">Lab 5</Link></li>
       </ul>
     </div>
   );

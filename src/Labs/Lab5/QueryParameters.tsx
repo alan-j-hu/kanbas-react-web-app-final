@@ -18,9 +18,17 @@ export default function QueryParameters() {
          href={`${REMOTE_SERVER}/lab5/calculator?operation=add&a=${a}&b=${b}`}>
         Add {a} + {b}
       </a>
-      <a className="btn btn-danger" id="wd-query-parameter-subtract"
+      <a className="btn btn-danger me-2" id="wd-query-parameter-subtract"
          href={`${REMOTE_SERVER}/lab5/calculator?operation=subtract&a=${a}&b=${b}`}>
         Substract {a} - {b}
+      </a>
+      <a className="btn btn-primary me-2" id="wd-query-parameter-add"
+         href={`${REMOTE_SERVER}/lab5/calculator?operation=multiply&a=${a}&b=${b}`}>
+        Multiply {a} * {b}
+      </a>
+      <a className="btn btn-danger" id="wd-query-parameter-subtract"
+         href={`${REMOTE_SERVER}/lab5/calculator?operation=divide&a=${a}&b=${b}`}>
+        Divide {a} / {b}
       </a>
       {/* create additional links to test multiply and divide. use IDs starting with wd-query-parameter- */}
       <hr />
