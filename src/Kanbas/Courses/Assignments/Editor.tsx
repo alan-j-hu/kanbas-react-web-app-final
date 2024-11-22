@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Routes, Route, Navigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { addAssignment, updateAssignment } from "./reducer";
+import * as assignmentsClient from "./client";
+import * as courseClient from "../client";
 
 export default function AssignmentEditor() {
   const { assignments } = useSelector((state: any) => state.assignmentsReducer);
@@ -19,7 +21,8 @@ export default function AssignmentEditor() {
       "description": String
   };
 
-  var update = (assignment : Assignment) => {
+  var update = async (assignment : Assignment) => {
+    await assignmentsClient.updateAssignment(assignment);
     dispatch(updateAssignment(assignment));
   };
   if (aid === undefined || assignment === undefined) {
@@ -33,7 +36,10 @@ export default function AssignmentEditor() {
       "description": "Description"
     };
 
-    update = (assignment: Assignment) => {
+    update = async (assignment: Assignment) => {
+      if (cid !== undefined) {
+        await courseClient.createAssignmentForCourse(cid, assignment);
+      }
       dispatch(addAssignment(assignment));
     };
   }
@@ -155,8 +161,8 @@ export default function AssignmentEditor() {
           <Link className="btn btn-secondary" to={`/Kanbas/Courses/${assignment.course}/Assignments`}>
             Cancel
           </Link>
-          <button onClick={() => {
-              update({
+          <button onClick={async () => {
+              await update({
                 ...assignment,
                 title,
                 start,

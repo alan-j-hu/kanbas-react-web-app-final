@@ -13,6 +13,11 @@ import * as coursesClient from "../client";
 function Assignment({ assignment }: { assignment: any }) {
   const dispatch = useDispatch();
 
+  const deleteAssn = async () => {
+    await assignmentsClient.deleteAssignment(assignment._id);
+    dispatch(deleteAssignment(assignment._id))
+  };
+
   const start = new Date(assignment.start);
   const due = new Date(assignment.due);
   const options: Intl.DateTimeFormatOptions = { 'month': 'short', day: '2-digit' };
@@ -29,7 +34,7 @@ function Assignment({ assignment }: { assignment: any }) {
           Due {due.toLocaleString('en-US', options)} | {assignment.points}pts
         </div>
         <div>
-          <AssignmentControlButtons deleteAssignment={() => dispatch(deleteAssignment(assignment._id))}/>
+          <AssignmentControlButtons deleteAssignment={() => deleteAssn()}/>
         </div>
       </div>
     </li>
