@@ -17,11 +17,14 @@ export default function Kanbas() {
   const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
 
   const [courses, setCourses] = useState<any[]>([]);
+  const [allCourses, setAllCourses] = useState<any[]>([]);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const fetchCourses = async () => {
     try {
       const courses = await userClient.findMyCourses();
+      const allCourses = await client.fetchAllCourses();
       setCourses(courses);
+      setAllCourses(allCourses);
     } catch (error) {
       console.error(error);
     }
@@ -35,8 +38,9 @@ export default function Kanbas() {
     _id: "1234", name: "New Course", number: "New Number",
     startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
   });
-  const addNewCourse = () => {
-    setCourses([...courses, { ...course, _id: new Date().getTime().toString() }]);
+  const addNewCourse = async () => {
+    const newCourse = await userClient.createCourse(course);
+    setCourses([...courses, newCourse]);
   };
   const deleteCourse = (courseId: any) => {
     setCourses(courses.filter((course) => course._id !== courseId));
@@ -55,7 +59,7 @@ export default function Kanbas() {
 
   const testEnrollment = (currentUser: any, params: any) => {
     const { cid } = params;
-    return enrollments.some((enrollment: any) => enrollment.course === cid);
+    return courses.some((course: any) => course._id === cid);
   };
 
   return (
@@ -70,6 +74,7 @@ export default function Kanbas() {
               <ProtectedRoute fallback="/Kanbas/Account/Signin">
                 <Dashboard
                   courses={courses}
+                  allCourses={allCourses}
                   course={course}
                   setCourse={setCourse}
                   addNewCourse={addNewCourse}
