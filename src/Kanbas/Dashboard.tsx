@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { setEnrollments, enroll, unenroll } from "./Enrollments/reducer"
+import { setEnrollments } from "./Enrollments/reducer"
+import * as client from "./Courses/client";
+import * as userClient from "./Account/client";
 import * as enrollmentsClient from "./Enrollments/client";
 
 export default function Dashboard(
-{ courses, allCourses, course, setCourse, addNewCourse,
+{ course, setCourse, addNewCourse,
   deleteCourse, updateCourse, }: {
-  courses: any[]; allCourses: any[]; course: any; setCourse: (course: any) => void;
+  course: any; setCourse: (course: any) => void;
   addNewCourse: () => void; deleteCourse: (course: any) => void;
   updateCourse: () => void;
 }) {
@@ -18,7 +20,24 @@ export default function Dashboard(
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const [showAllCourses, setShowAllCourses] = useState(false);
 
+  const [courses, setCourses] = useState<any[]>([]);
+  const [allCourses, setAllCourses] = useState<any[]>([]);
   const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
+
+  const fetchCourses = async () => {
+    try {
+      const courses = await userClient.findMyCourses();
+      const allCourses = await client.fetchAllCourses();
+      setCourses(courses);
+      setAllCourses(allCourses);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    fetchCourses();
+  }, [currentUser, enrollments]);
+
   const fetchEnrollments = async () => {
     try {
       const enrollments = await enrollmentsClient.getEnrollments();
@@ -78,13 +97,11 @@ export default function Dashboard(
 
     const action = async () => {
       if (isEnrolled) {
-        const enrollment = enrollments.find((e: any) => e.course === course._id && e.user === currentUser._id);
         await enrollmentsClient.unenroll(course._id);
-        dispatch(unenroll(enrollment));
+        await fetchEnrollments();
       } else {
-        const enrollment = { user: currentUser._id, course: course._id };
         await enrollmentsClient.enroll(course._id);
-        dispatch(enroll(enrollment));
+        await fetchEnrollments();
       }
     };
 

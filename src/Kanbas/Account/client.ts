@@ -30,6 +30,7 @@ export const signout = async () => {
 };
 
 export const findMyCourses = async () => {
+  console.log("Getting");
   const { data } = await axiosWithCredentials.get(`${USERS_API}/current/courses`);
   return data;
 };

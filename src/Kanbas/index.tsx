@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Account from "./Account";
 import Session from "./Account/Session";
 import ProtectedRoute from "./Account/ProtectedRoute";
@@ -7,24 +7,18 @@ import Dashboard from "./Dashboard";
 import KanbasNavigation from "./Navigation";
 import Courses from "./Courses";
 import './styles.css';
-import { enroll, unenroll } from "./Enrollments/reducer"
 import { useState, useEffect } from "react";
 
-import * as client from "./Courses/client";
 import * as userClient from "./Account/client";
 
 export default function Kanbas() {
-  const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
 
   const [courses, setCourses] = useState<any[]>([]);
-  const [allCourses, setAllCourses] = useState<any[]>([]);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const fetchCourses = async () => {
     try {
       const courses = await userClient.findMyCourses();
-      const allCourses = await client.fetchAllCourses();
       setCourses(courses);
-      setAllCourses(allCourses);
     } catch (error) {
       console.error(error);
     }
@@ -73,8 +67,6 @@ export default function Kanbas() {
             <Route path="/Dashboard" element={
               <ProtectedRoute fallback="/Kanbas/Account/Signin">
                 <Dashboard
-                  courses={courses}
-                  allCourses={allCourses}
                   course={course}
                   setCourse={setCourse}
                   addNewCourse={addNewCourse}
