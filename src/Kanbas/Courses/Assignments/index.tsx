@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BsGripVertical, BsSearch } from "react-icons/bs"
 import { FaPlus } from "react-icons/fa6";
@@ -5,7 +6,9 @@ import { PiNotePencilBold } from "react-icons/pi";
 import { Link, useParams } from "react-router-dom";
 import AssignmentControlButtons from "./AssignmentControlButtons";
 import AssignmentHeaderControlButtons from "./AssignmentHeaderControlButtons";
-import { deleteAssignment } from "./reducer";
+import { setAssignments, deleteAssignment } from "./reducer";
+import * as assignmentsClient from "./client";
+import * as coursesClient from "../client";
 
 function Assignment({ assignment }: { assignment: any }) {
   const dispatch = useDispatch();
@@ -61,7 +64,18 @@ function Control(props : { cid: String | undefined }) {
 
 export default function Assignments() {
   const { cid } = useParams();
+  const dispatch = useDispatch();
   const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+
+  const fetchAssignments = async () => {
+    const assignments = await coursesClient.findAssignmentsForCourse(cid as string);
+    dispatch(setAssignments(assignments));
+  };
+  useEffect(() => {
+    fetchAssignments();
+  }, []);
+
+
   return (
     <div id="wd-assignments">
       <Control cid={cid}/><br/><br/><br/><br/>
@@ -75,7 +89,6 @@ export default function Assignments() {
           </div>
           <ul id="wd-assignment-list" className="list-group rounded-0">
             {assignments
-              .filter((assignment: any) => assignment.course === cid)
               .map((assignment: any) =>
                 <Assignment assignment={assignment}/>)}
           </ul>
