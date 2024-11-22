@@ -7,6 +7,15 @@ export default function WorkingWithObjects() {
     due: "2021-10-10", completed: false, score: 0,
   });
   const ASSIGNMENT_API_URL = `${REMOTE_SERVER}/lab5/assignment`
+
+  const [module, setModule] = useState({
+    id: "M101",
+    name: "Introduction to Rocket Propulsion",
+    description: "Basic principles of rocket propulsion and rocket engines.",
+    course: "RS101",
+  });
+  const MODULE_API_URL = `${REMOTE_SERVER}/lab5/module`
+
   return (
     <div id="wd-working-with-objects">
       <h4>Modifying Properties</h4>
@@ -53,6 +62,27 @@ export default function WorkingWithObjects() {
         type="checkbox"
         defaultChecked={!!assignment.completed} onChange={(e) =>
           setAssignment({ ...assignment, completed: !!assignment.completed })}/>
+      <hr />
+
+      <h4>Retrieving Objects</h4>
+      <a id="wd-retrieve-modules" className="btn btn-primary"
+         href={`${REMOTE_SERVER}/lab5/module`}>
+        Get Module
+      </a><hr/>
+      <h4>Retrieving Properties</h4>
+      <a id="wd-retrieve-module-name" className="btn btn-primary"
+         href={`${REMOTE_SERVER}/lab5/module/name`}>
+        Get Module Name
+      </a><hr/>
+
+      <a id="wd-update-module-name"
+         className="btn btn-primary float-end"
+         href={`${MODULE_API_URL}/name/${module.name}`}>
+        Update Name
+      </a>
+      <input className="form-control w-75" id="wd-module-name"
+        defaultValue={module.name} onChange={(e) =>
+          setModule({ ...module, name: e.target.value })}/>
       <hr />
     </div>
 );}
