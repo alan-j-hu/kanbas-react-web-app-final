@@ -9,12 +9,29 @@ import Courses from "./Courses";
 import './styles.css';
 import * as db from "./Database";
 import { enroll, unenroll } from "./Enrollments/reducer"
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import * as client from "./Courses/client";
+import * as userClient from "./Account/client";
 
 export default function Kanbas() {
   const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
 
   const [courses, setCourses] = useState<any[]>(db.courses);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const fetchCourses = async () => {
+    try {
+      const courses = await userClient.findMyCourses();
+      setCourses(courses);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    fetchCourses();
+  }, [currentUser]);
+
+
   const [course, setCourse] = useState<any>({
     _id: "1234", name: "New Course", number: "New Number",
     startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",

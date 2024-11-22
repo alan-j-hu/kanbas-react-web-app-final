@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import * as db from "./Database";
 import { enroll, unenroll } from "./Enrollments/reducer"
 
 export default function Dashboard(
@@ -16,9 +15,6 @@ export default function Dashboard(
   const fallback = "reactjs.jpg";
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
-  const userEnrolled = enrollments
-    .filter((enrollment: any) => enrollment.user === currentUser._id);
 
   const [allCourses, setAllCourses] = useState(false);
 
@@ -94,8 +90,6 @@ export default function Dashboard(
       <div id="wd-dashboard-courses" className="row">
         <div className="row row-cols-1 row-cols-md-5 g-4">
           {courses
-            .filter((course) =>
-              allCourses || userEnrolled.some((enrollment: any) => enrollment.course === course._id))
             .map((course) => (
               <div className="wd-dashboard-course col" style={{ width: "300px" }}>
                 <div className="card rounded-3 overflow-hidden">
