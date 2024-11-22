@@ -7,7 +7,6 @@ import Dashboard from "./Dashboard";
 import KanbasNavigation from "./Navigation";
 import Courses from "./Courses";
 import './styles.css';
-import * as db from "./Database";
 import { enroll, unenroll } from "./Enrollments/reducer"
 import { useState, useEffect } from "react";
 
@@ -17,7 +16,7 @@ import * as userClient from "./Account/client";
 export default function Kanbas() {
   const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
 
-  const [courses, setCourses] = useState<any[]>(db.courses);
+  const [courses, setCourses] = useState<any[]>([]);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const fetchCourses = async () => {
     try {
