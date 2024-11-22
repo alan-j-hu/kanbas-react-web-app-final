@@ -10,6 +10,20 @@ export default function WorkingWithObjects() {
   return (
     <div id="wd-working-with-objects">
       <h4>Modifying Properties</h4>
+
+      <h3>Working With Objects</h3>
+      <h4>Retrieving Objects</h4>
+      <a id="wd-retrieve-assignments" className="btn btn-primary"
+         href={`${REMOTE_SERVER}/lab5/assignment`}>
+        Get Assignment
+      </a><hr/>
+
+      <h4>Retrieving Properties</h4>
+      <a id="wd-retrieve-assignment-title" className="btn btn-primary"
+         href={`${REMOTE_SERVER}/lab5/assignment/title`}>
+        Get Title
+      </a><hr/>
+
       <a id="wd-update-assignment-title"
          className="btn btn-primary float-end"
          href={`${ASSIGNMENT_API_URL}/title/${assignment.title}`}>
@@ -20,16 +34,25 @@ export default function WorkingWithObjects() {
           setAssignment({ ...assignment, title: e.target.value })}/>
       <hr />
 
-      <h3>Working With Objects</h3>
-      <h4>Retrieving Objects</h4>
-      <a id="wd-retrieve-assignments" className="btn btn-primary"
-         href={`${REMOTE_SERVER}/lab5/assignment`}>
-        Get Assignment
-      </a><hr/>
-      <h4>Retrieving Properties</h4>
-      <a id="wd-retrieve-assignment-title" className="btn btn-primary"
-         href={`${REMOTE_SERVER}/lab5/assignment/title`}>
-        Get Title
-      </a><hr/>
+      <a id="wd-update-assignment-score"
+         className="btn btn-primary float-end"
+         href={`${ASSIGNMENT_API_URL}/score/${assignment.score}`}>
+        Update Score
+      </a>
+      <input className="form-control w-75" id="wd-assignment-score"
+        defaultValue={assignment.score} onChange={(e) =>
+          setAssignment({ ...assignment, score: parseInt(e.target.value) })}/>
+      <hr />
+
+      <a id="wd-update-assignment-completed"
+         className="btn btn-primary float-end"
+         href={`${ASSIGNMENT_API_URL}/completed/${!!assignment.completed}`}>
+        Update Completed
+      </a>
+      <input className="form-check" id="wd-assignment-completed"
+        type="checkbox"
+        defaultChecked={!!assignment.completed} onChange={(e) =>
+          setAssignment({ ...assignment, completed: !!assignment.completed })}/>
+      <hr />
     </div>
 );}
