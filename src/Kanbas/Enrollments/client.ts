@@ -8,12 +8,3 @@ export const getEnrollments = async () => {
   const response = await axiosWithCredentials.get(`${ENROLLMENTS_API}`);
   return response.data;
 }
-
-export const enroll = async (cid: string) => {
-  const response = await axiosWithCredentials.post(`${ENROLLMENTS_API}/${cid}`);
-  return response.data;
-}
-
-export const unenroll = async (cid: string) => {
-  const response = await axiosWithCredentials.delete(`${ENROLLMENTS_API}/${cid}`);
-}

@@ -21,6 +21,7 @@ export default function PeopleDetails() {
   };
 
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [editing, setEditing] = useState(false);
   const saveUser = async () => {
     const [firstName, lastName] = name.split(" ");
@@ -59,47 +60,33 @@ export default function PeopleDetails() {
             onKeyDown={(e) => {
               if (e.key === "Enter") { saveUser(); }}}/>)}
       </div>
-      <div>
-      <b>Roles:</b>
-        {!editing && (
-          <FaPencil onClick={() => setEditing(true)}
-              className="float-end fs-5 mt-2 wd-edit" /> )}
-        {editing && (
-          <FaCheck onClick={() => saveUser()}
-              className="float-end fs-5 mt-2 me-2 wd-save" /> )}
-        <span className="wd-roles">{user.role}</span>
-      </div>
+      <b>Roles:</b> <span className="wd-roles">{user.role}</span>
       <br />
       <div>
       <b>Login ID:</b>
-        {!editing && (
-          <FaPencil onClick={() => setEditing(true)}
-              className="float-end fs-5 mt-2 wd-edit" /> )}
-        {editing && (
-          <FaCheck onClick={() => saveUser()}
-              className="float-end fs-5 mt-2 me-2 wd-save" /> )}
         <span className="wd-login-id">{user.loginId}</span>
       </div>
       <br />
       <div>
-      <b>Section:</b>
+      <b>Email:</b>
         {!editing && (
-          <FaPencil onClick={() => setEditing(true)}
-              className="float-end fs-5 mt-2 wd-edit" /> )}
-        {editing && (
-          <FaCheck onClick={() => saveUser()}
-              className="float-end fs-5 mt-2 me-2 wd-save" /> )}
+          <span className="wd-email">{user.email}</span>)}
+        {user && editing && (
+          <input key={`wd-edit-email-${uid}`}
+            className="form-control w-50 wd-edit-email"
+            defaultValue={`${user.email}`}
+            onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") { saveUser(); }}}/>)}
+      </div>
+      <br />
+      <div>
+      <b>Section:</b>
         <span className="wd-section">{user.section}</span>
       </div>
       <br />
       <b>Total Activity:</b>
       <div>
-        {!editing && (
-          <FaPencil onClick={() => setEditing(true)}
-              className="float-end fs-5 mt-2 wd-edit" /> )}
-        {editing && (
-          <FaCheck onClick={() => saveUser()}
-              className="float-end fs-5 mt-2 me-2 wd-save" /> )}
         <span className="wd-total-activity">{user.totalActivity}</span>
       </div>
       <hr />
