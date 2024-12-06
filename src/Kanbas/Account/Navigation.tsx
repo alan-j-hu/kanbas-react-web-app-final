@@ -13,5 +13,6 @@ export default function AccountNavigation() {
           [<Link to={`/Kanbas/Account/${link}`}>{link}</Link>, <br/>])}
       {currentUser && currentUser.role === "ADMIN" && (
         <Link to={`/Kanbas/Account/Users`} className={`list-group-item ${active("Users")}`}> Users </Link> )}
+      <Link to="/">Landing</Link>
     </div>
 );}
