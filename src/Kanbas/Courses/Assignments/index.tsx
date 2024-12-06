@@ -28,7 +28,7 @@ function Assignment({ assignment }: { assignment: any }) {
         <PiNotePencilBold className="me-2"/>
         <div className="d-inline-block flex-grow-1">
           <Link to={`/Kanbas/Courses/${assignment.course}/Assignments/${assignment._id}/Editor`}>
-            {assignment._id} | {assignment.title}
+            {assignment.title}
           </Link><br/>
           <a>Multiple modules</a> | <strong>Not available until </strong> {start.toLocaleString('en-US', options)} |
           Due {due.toLocaleString('en-US', options)} | {assignment.points}pts
