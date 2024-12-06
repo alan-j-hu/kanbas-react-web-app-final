@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
@@ -12,11 +12,11 @@ export default function AssignmentEditor() {
   var assignment = assignments.find((assignment: any) => assignment._id === aid);
 
   type Assignment = {
-      title: String,
+      "title": String,
       "course": String,
-      "start": String,
-      "due": String,
-      "until": String,
+      "start": Date,
+      "due": Date,
+      "until": Date,
       "points": number,
       "description": String
   };
@@ -29,9 +29,9 @@ export default function AssignmentEditor() {
     assignment = {
       "title": "Title",
       "course": cid,
-      "start": "2024-01-01",
-      "due": "2024-01-01",
-      "until": "2024-01-01",
+      "start": new Date("2024-01-01"),
+      "due": new Date("2024-01-01"),
+      "until": new Date("2024-01-01"),
       "points": 0,
       "description": "Description"
     };
@@ -53,6 +53,28 @@ export default function AssignmentEditor() {
   const [until, setUntil] = useState(assignment && assignment.until);
   const [points, setPoints] = useState(assignment && assignment.points);
   const [description, setDescription] = useState(assignment && assignment.description);
+
+  const setDate = (f: (date: Date) => void, r: React.RefObject<HTMLInputElement>) => (e: any) => {
+    if (r.current !== null && r.current.valueAsDate !== null) {
+      return f(r.current.valueAsDate);
+    }
+  };
+
+  const startRef = useRef<HTMLInputElement>(null);
+  const dueRef = useRef<HTMLInputElement>(null);
+  const untilRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (startRef.current !== null) {
+      startRef.current.valueAsDate = new Date(start);
+    }
+    if (dueRef.current !== null) {
+      dueRef.current.valueAsDate = new Date(due);
+    }
+    if (untilRef.current !== null) {
+      untilRef.current.valueAsDate = new Date(until);
+    }
+  }, []);
 
   return (
     <div id="wd-assignments-editor">
@@ -135,24 +157,21 @@ export default function AssignmentEditor() {
 
             <label htmlFor="wd-due-date">Due</label><br />
             <input className="form-control" type="date"
-              id="wd-due-date"
-              value={due}
-              onChange={e => setDue(e.target.value)}/><br/>
+              id="wd-due-date" ref={dueRef}
+              onChange={setDate(setDue, dueRef)}/><br/>
 
             <div className="row">
               <div className="col">
                 <label htmlFor="wd-available-from">Available from</label><br />
                 <input type="date" className="form-control"
-                  id="wd-available-from"
-                  value={start}
-                  onChange={e => setStart(e.target.value)}/><br/>
+                  id="wd-available-from" ref={startRef}
+                  onChange={setDate(setStart, startRef)}/><br/>
               </div>
               <div className="col">
                 <label htmlFor="wd-available-until">Until</label><br />
                 <input type="date" className="form-control"
-                  id="wd-available-until"
-                  value={until}
-                  onChange={e => setUntil(e.target.value)}/><br/>
+                  id="wd-available-until" ref={untilRef}
+                  onChange={setDate(setUntil, untilRef)}/><br/>
               </div>
             </div>
           </div>

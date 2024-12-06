@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaCheck, FaUserCircle } from "react-icons/fa";
 import { FaPencil } from "react-icons/fa6";
 import { IoCloseSharp } from "react-icons/io5";
@@ -8,12 +8,23 @@ import * as client from "../../Account/client";
 
 export default function PeopleDetails() {
   const { uid } = useParams();
+
+  const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const roleRef = useRef<HTMLSelectElement>(null);
+
   const [user, setUser] = useState<any>({});
   const navigate = useNavigate();
   const fetchUser = async () => {
     if (!uid) return;
     const user = await client.findUserById(uid);
     setUser(user);
+    if (nameRef.current !== null) {
+      nameRef.current.value = user.firstName + ' ' + user.lastName;
+    }
+    if (emailRef.current !== null) {
+      emailRef.current.value = user.email;
+    }
   };
   const deleteUser = async (uid: string) => {
     await client.deleteUser(uid);
@@ -21,12 +32,16 @@ export default function PeopleDetails() {
   };
 
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+
   const [editing, setEditing] = useState(false);
-  const saveUser = async () => {
+  const saveUser = async (name: String, email: String) => {
     const [firstName, lastName] = name.split(" ");
-    const updatedUser = { ...user, firstName, lastName };
-    //await client.updateUser(updatedUser);
-    //setUser(updatedUser);
+    const role = roleRef.current === null ? user.role : roleRef.current.value;
+    const updatedUser = { ...user, firstName, lastName, email, role };
+    console.log(updatedUser);
+    await client.updateUser(updatedUser);
+    setUser(updatedUser);
     setEditing(false);
     navigate('/Kanbas/Account/Users/');
   };
@@ -34,6 +49,7 @@ export default function PeopleDetails() {
   useEffect(() => {
     if (uid) fetchUser();
   }, [uid]);
+
   if (!uid) return null;
   return (
     <div className="wd-people-details position-fixed top-0 end-0 bottom-0 bg-white p-4 shadow w-25">
@@ -45,7 +61,7 @@ export default function PeopleDetails() {
           <FaPencil onClick={() => setEditing(true)}
               className="float-end fs-5 mt-2 wd-edit" /> )}
         {editing && (
-          <FaCheck onClick={() => saveUser()}
+          <FaCheck onClick={() => saveUser(name, email)}
               className="float-end fs-5 mt-2 me-2 wd-save" /> )}
         {!editing && (
           <div className="wd-name"
@@ -53,53 +69,51 @@ export default function PeopleDetails() {
           {user.firstName} {user.lastName}</div>)}
         {user && editing && (
           <input key={`wd-edit-name-${uid}`}
+            ref={nameRef}
             className="form-control w-50 wd-edit-name"
             defaultValue={`${user.firstName} ${user.lastName}`}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter") { saveUser(); }}}/>)}
+              if (e.key === "Enter") { saveUser(name, email); }}}/>)}
       </div>
       <div>
       <b>Roles:</b>
-        {!editing && (
-          <FaPencil onClick={() => setEditing(true)}
-              className="float-end fs-5 mt-2 wd-edit" /> )}
-        {editing && (
-          <FaCheck onClick={() => saveUser()}
-              className="float-end fs-5 mt-2 me-2 wd-save" /> )}
-        <span className="wd-roles">{user.role}</span>
+        {!editing && (<span className="wd-roles">{user.role}</span>)}
+        {user && editing && (
+          <select ref={roleRef} className="form-select" aria-label="Role">
+            <option value="STUDENT" selected={user.role === "STUDENT"}>Student</option>
+            <option value="TA" selected={user.role === "TA"}>TA</option>
+            <option value="FACULTY" selected={user.role === "FACULTY"}>Faculty</option>
+            <option value="ADMIN" selected={user.role === "ADMIN"}>Admin</option>
+          </select>)}
       </div>
       <br />
       <div>
       <b>Login ID:</b>
-        {!editing && (
-          <FaPencil onClick={() => setEditing(true)}
-              className="float-end fs-5 mt-2 wd-edit" /> )}
-        {editing && (
-          <FaCheck onClick={() => saveUser()}
-              className="float-end fs-5 mt-2 me-2 wd-save" /> )}
         <span className="wd-login-id">{user.loginId}</span>
       </div>
       <br />
       <div>
-      <b>Section:</b>
+      <b>Email:</b>
         {!editing && (
-          <FaPencil onClick={() => setEditing(true)}
-              className="float-end fs-5 mt-2 wd-edit" /> )}
-        {editing && (
-          <FaCheck onClick={() => saveUser()}
-              className="float-end fs-5 mt-2 me-2 wd-save" /> )}
+          <span className="wd-email">{user.email}</span>)}
+        {user && editing && (
+          <input key={`wd-edit-email-${uid}`}
+            ref={emailRef}
+            className="form-control w-50 wd-edit-email"
+            defaultValue={`${user.email}`}
+            onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") { saveUser(name, email); }}}/>)}
+      </div>
+      <br />
+      <div>
+      <b>Section:</b>
         <span className="wd-section">{user.section}</span>
       </div>
       <br />
       <b>Total Activity:</b>
       <div>
-        {!editing && (
-          <FaPencil onClick={() => setEditing(true)}
-              className="float-end fs-5 mt-2 wd-edit" /> )}
-        {editing && (
-          <FaCheck onClick={() => saveUser()}
-              className="float-end fs-5 mt-2 me-2 wd-save" /> )}
         <span className="wd-total-activity">{user.totalActivity}</span>
       </div>
       <hr />
