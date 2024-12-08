@@ -7,7 +7,6 @@ import Home from "./Home";
 import PeopleTable from "./People/Table";
 import QuizEditor from "./Quizzes/Editor";
 import { Routes, Route, Navigate, useParams } from "react-router";
-import QuizzesIndex from "./Quizzes";
 
 export default function Courses({ courses }: { courses: any[] }) {
   const { cid } = useParams();
@@ -35,7 +34,7 @@ export default function Courses({ courses }: { courses: any[] }) {
               path="Assignments/:aid/Editor"
               element={<AssignmentEditor />}
             />
-            <Route path="Quizzes" element={<QuizzesIndex />} />
+            <Route path="Quizzes" element={<QuizEditor />} />
             <Route path="People" element={<PeopleTable />} />
           </Routes>
         </div>
