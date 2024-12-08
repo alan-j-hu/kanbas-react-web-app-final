@@ -10,7 +10,7 @@ export default function QuizzesIndex() {
   const { cid } = useParams(); // get course id
   return (
     <Routes>
-      <Route path="/" element={<List courseId={cid!} />} />
+      <Route path="/" element={<List />} />
       <Route path=":quizId" element={<Details />} />
       <Route path=":quizId/editor" element={<Editor />} />
       <Route path=":quizId/questions" element={<QuestionsEditor />} />
