@@ -21,13 +21,37 @@ const MultipleChoiceEditor = ({
     setQuestion((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleChoiceChange = (index: number, value: string) => {};
+  const handleChoiceChange = (index: number, value: string) => {
+    setQuestion((prev) => {
+      const updatedChoices = [...prev.choices];
+      updatedChoices[index].text = value;
+      return { ...prev, choices: updatedChoices };
+    });
+  };
 
-  const handleCorrectChoiceChange = (index: number) => {};
+  const handleCorrectChoiceChange = (index: number) => {
+    setQuestion((prev) => {
+      const updatedChoices = prev.choices.map((choice, i) => ({
+        ...choice,
+        correct: i === index,
+      }));
+      return { ...prev, choices: updatedChoices };
+    });
+  };
 
-  const handleAddChoice = () => {};
+  const handleAddChoice = () => {
+    setQuestion((prev) => ({
+      ...prev,
+      choices: [...prev.choices, { text: "", correct: false }],
+    }));
+  };
 
-  const handleRemoveChoice = (index: number) => {};
+  const handleRemoveChoice = (index: number) => {
+    setQuestion((prev) => {
+      const updatedChoices = prev.choices.filter((_, i) => i !== index);
+      return { ...prev, choices: updatedChoices };
+    });
+  };
 
   return (
     <div>

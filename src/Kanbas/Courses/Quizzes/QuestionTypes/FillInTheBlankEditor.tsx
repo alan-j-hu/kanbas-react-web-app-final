@@ -13,7 +13,7 @@ const FillInTheBlankEditor = ({
     questionText: "",
     correctAnswers: [""],
   });
-  //SET DEFAULT VALUES FROM ABOVE
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -21,12 +21,29 @@ const FillInTheBlankEditor = ({
     setQuestion((prev) => ({ ...prev, [name]: value }));
   };
 
-  //NEEDS TO IMPLEMENT
-  const handleCorrectAnswerChange = (index: number, value: string) => {};
+  const handleCorrectAnswerChange = (index: number, value: string) => {
+    setQuestion((prev) => {
+      const updatedAnswers = [...prev.correctAnswers];
+      updatedAnswers[index] = value;
+      return { ...prev, correctAnswers: updatedAnswers };
+    });
+  };
 
-  const handleAddAnswer = () => {};
+  const handleAddAnswer = () => {
+    setQuestion((prev) => ({
+      ...prev,
+      correctAnswers: [...prev.correctAnswers, ""],
+    }));
+  };
 
-  const handleRemoveAnswer = (index: number) => {};
+  const handleRemoveAnswer = (index: number) => {
+    setQuestion((prev) => {
+      const updatedAnswers = prev.correctAnswers.filter(
+        (_, i) => i !== index
+      );
+      return { ...prev, correctAnswers: updatedAnswers };
+    });
+  };
 
   return (
     <div>
