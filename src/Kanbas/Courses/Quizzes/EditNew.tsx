@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import Editor from "./Editor";
 import * as quizClient from "./client";
+import { useParams } from "react-router";
 
 const EditNew = () => {
+  const { cid } = useParams<{ cid: string }>(); // Move useParams inside the component
+
   const quiz = {
     _id: new Date().getTime().toString(),
     title: "New Quiz",
@@ -13,7 +16,7 @@ const EditNew = () => {
     timeLimit: 20,
     multipleAttempts: false,
     maxAttempts: 1,
-    showCorrectAnswers: false,
+    showCorrectAnswers: "Never",
     accessCode: "",
     oneQuestionAtATime: true,
     webcamRequired: false,
@@ -24,8 +27,10 @@ const EditNew = () => {
     published: false,
     points: 0,
     questions: [],
+    courseId: cid, 
   };
-  return <Editor quiz={quiz}/>;
+
+  return <Editor quiz={quiz} />;
 };
 
 export default EditNew;

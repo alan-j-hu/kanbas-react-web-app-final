@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import QuestionEditor from "./QuestionEditor";
-
+import * as quizClient from "./client"
+import * as courseClient from "../client"
+import { useDispatch } from "react-redux";
 const QuizEditor = ({quiz}: {quiz: any}) => {
   const navigate = useNavigate();
 
@@ -13,7 +15,7 @@ const QuizEditor = ({quiz}: {quiz: any}) => {
   const [timeLimit, setTimeLimit] = useState<number>(quiz.timeLimit);
   const [multipleAttempts, setMultipleAttempts] = useState<boolean>(quiz.multipleAttempts);
   const [maxAttempts, setMaxAttempts] = useState<number>(quiz.maxAttempts);
-  const [showCorrectAnswers, setShowCorrectAnswers] = useState<boolean>(quiz.showCorrectAnswers);
+  const [showCorrectAnswers, setShowCorrectAnswers] = useState<String>(quiz.showCorrectAnswers);
   const [accessCode, setAccessCode] = useState<string>(quiz.accessCode);
   const [oneQuestionAtATime, setOneQuestionAtATime] = useState<boolean>(quiz.oneQuestionAtATime);
   const [webcamRequired, setWebcamRequired] = useState<boolean>(quiz.webcamRequired);
@@ -22,28 +24,98 @@ const QuizEditor = ({quiz}: {quiz: any}) => {
   const [available, setAvailable] = useState<Date>(quiz.available);
   const [until, setUntil] = useState<Date>(quiz.until);
   const [published, setPublished] = useState<boolean>(quiz.published);
-  const [points, setPoints] = useState<boolean>(quiz.points);
+  const [points, setPoints] = useState<number>(quiz.points);
   const [questions, setQuestions] = useState<any[]>(quiz.questions);
 
   const availableRef = useRef<HTMLInputElement>(null);
   const dueRef = useRef<HTMLInputElement>(null);
   const untilRef = useRef<HTMLInputElement>(null);
 
+  const { cid } = useParams<{ cid: string }>();
+
   useEffect(() => {
-    if (availableRef.current !== null) {
-      availableRef.current.valueAsDate = new Date(available);
+    const formatDateTime = (date: Date) => {
+      if (!date) return "";
+      const isoString = date.toISOString();
+      return isoString.slice(0, 16); 
+    };
+  
+    if (availableRef.current) {
+      availableRef.current.value = formatDateTime(available);
     }
-    if (dueRef.current !== null) {
-      dueRef.current.valueAsDate = new Date(due);
+    if (dueRef.current) {
+      dueRef.current.value = formatDateTime(due);
     }
-    if (untilRef.current !== null) {
-      untilRef.current.valueAsDate = new Date(until);
+    if (untilRef.current) {
+      untilRef.current.value = formatDateTime(until);
     }
-  }, []);
+  }, [available, due, until]);
+
+  type Quiz = {
+    "title": String,
+    "description": String,
+    "quizType": String,
+    "assignmentGroup": String,
+    "shuffleAnswers": Boolean,
+    "timeLimit": number,
+    "multipleAttempts": Boolean,
+    "maxAttempts": number,
+    "showCorrectAnswers": String,
+    "accessCode": String,
+    "oneQuestionAtATime": Boolean,
+    "webcamRequired": Boolean,
+    "lockQuestions": Boolean,
+    "due": Date,
+    "until": Date,
+    "available": Date,
+    "published": Boolean,
+    "points": number,
+    "questions": any[],
+    "courseId": String,
+  }
+
+  //const dispatch=useDispatch();
+
+  var update = async (quiz : Quiz) => {
+    console.log(quiz)
+    await quizClient.updateQuiz(quiz);
+   // dispatch(updateQuiz(quiz));
+  };
 
   const handleInputChange = () => {};
   const handleSaveAndPublish = () => {};
-  const handleSave = () => {};
+  const handleSave = async () => {
+    if (cid !== undefined) {
+      // Create a copy of the quiz object and remove `_id`
+      const { _id, ...quizWithoutId } = quiz;
+  
+      await courseClient.createQuizForCourse(cid, quizWithoutId);
+    }
+  
+    navigate(`/Kanbas/Courses/${cid}/Quizzes`);
+  };
+     // await update({
+    //   ...quiz,
+    //   title,
+    //   description,
+    //   quizType,
+    //   assignmentGroup,
+    //   shuffleAnswers,
+    //   timeLimit,
+    //   multipleAttempts,
+    //   maxAttempts,
+    //   showCorrectAnswers,
+    //   accessCode,
+    //   oneQuestionAtATime,
+    //   webcamRequired,
+    //   lockQuestions,
+    //   due,
+    //   until,
+    //   available,
+    //   published,
+    //   points,
+    //   questions,
+    // });
   const handleCancel = () => {
     navigate(-1);
   };
@@ -241,18 +313,21 @@ const QuizEditor = ({quiz}: {quiz: any}) => {
             )}
 
             {/* Other Options */}
-            <div className="form-check mb-3">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                id="showCorrectAnswers"
-                name="showCorrectAnswers"
-                checked={showCorrectAnswers}
-                onChange={handleInputChange}
-              />
-              <label className="form-check-label" htmlFor="showCorrectAnswers">
+            <div className="mb-3">
+            <label htmlFor="showCorrectAnswers" className="form-label">
                 Show Correct Answers
               </label>
+              <select
+              
+                className="form-select"
+                id="showCorrectAnswers"
+                name="showCorrectAnswers"
+                onChange={handleInputChange}>
+             
+                <option value="Never">Never</option>
+                <option value="AfterDueDate">After Due Date</option>
+                <option value="Immediately">Immediately</option>
+                </select>
             </div>
 
             <div className="form-check mb-3">
