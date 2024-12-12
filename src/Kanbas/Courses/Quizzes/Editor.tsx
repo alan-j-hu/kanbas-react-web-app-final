@@ -1,55 +1,13 @@
 import React, { useState } from "react";
 import QuestionEditor from "./QuestionEditor";
 
-const QuizEditor = () => {
-  //sample data
-  const [quizDetails, setQuizDetails] = useState({
-    title: "",
-    description: "",
-    quizType: "GRADED_QUIZ",
-    assignmentGroup: "QUIZZES",
-    shuffleAnswers: false,
-    timeLimit: 20,
-    multipleAttempts: false,
-    attemptsAllowed: 1,
-    showCorrectAnswers: false,
-    accessCode: "",
-    oneQuestionAtATime: true,
-    webcamRequired: false,
-    lockQuestions: false,
-    dueDate: "",
-    availableDate: "",
-    untilDate: "",
-  });
+const QuizEditor = ({quiz}: {quiz: any}) => {
+  const [questions, setQuestions] = useState<any[]>(quiz.questions);
 
-  // form update event handler
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value, type } = e.target;
-    setQuizDetails((prevDetails) => ({
-      ...prevDetails,
-      [name]: type === "checkbox",
-    }));
-  };
-
-  // INCOMPLETE NEED TO ADD API CALL TO SAVE QUIZ
-  const handleSave = () => {
-    console.log("Quiz saved:", quizDetails);
-  };
-  // INCOMPLETE NEED TO ADD API CALL TO SAVE AND PUBLISH QUIZ
-  const handleSaveAndPublish = () => {
-    console.log("Quiz saved and published:", quizDetails);
-  };
-
-  // INCOMPLETE NEED TO ADD API CALL TO CANCEL (GO BACK TO QUIZ LIST)
-  const handleCancel = () => {
-    console.log("Edit canceled.");
-  };
-
-  const [questions, setQuestions] = useState<any[]>([]);
+  const handleInputChange = () => {};
+  const handleSaveAndPublish = () => {};
+  const handleSave = () => {};
+  const handleCancel = () => {};
 
   // WE WILL NEED TO REPLACE THIS NAVIGATION LINK METHOD TO API CALL METHODS
   // PASSING IN QUIZ ID
@@ -124,7 +82,7 @@ const QuizEditor = () => {
                 className="form-control"
                 id="title"
                 name="title"
-                value={quizDetails.title}
+                value={quiz.title}
                 onChange={handleInputChange}
               />
             </div>
@@ -138,7 +96,7 @@ const QuizEditor = () => {
                 className="form-control"
                 id="description"
                 name="description"
-                value={quizDetails.description}
+                value={quiz.description}
                 onChange={handleInputChange}
               />
             </div>
@@ -152,7 +110,7 @@ const QuizEditor = () => {
                 className="form-select"
                 id="quizType"
                 name="quizType"
-                value={quizDetails.quizType}
+                value={quiz.quizType}
                 onChange={handleInputChange}
               >
                 <option value="GRADED_QUIZ">Graded Quiz</option>
@@ -171,7 +129,7 @@ const QuizEditor = () => {
                 className="form-select"
                 id="assignmentGroup"
                 name="assignmentGroup"
-                value={quizDetails.assignmentGroup}
+                value={quiz.assignmentGroup}
                 onChange={handleInputChange}
               >
                 <option value="QUIZZES">Quizzes</option>
@@ -188,7 +146,7 @@ const QuizEditor = () => {
                 type="checkbox"
                 id="shuffleAnswers"
                 name="shuffleAnswers"
-                checked={quizDetails.shuffleAnswers}
+                checked={quiz.shuffleAnswers}
                 onChange={handleInputChange}
               />
               <label className="form-check-label" htmlFor="shuffleAnswers">
@@ -206,7 +164,7 @@ const QuizEditor = () => {
                 className="form-control"
                 id="timeLimit"
                 name="timeLimit"
-                value={quizDetails.timeLimit}
+                value={quiz.timeLimit}
                 onChange={handleInputChange}
               />
             </div>
@@ -218,7 +176,7 @@ const QuizEditor = () => {
                 type="checkbox"
                 id="multipleAttempts"
                 name="multipleAttempts"
-                checked={quizDetails.multipleAttempts}
+                checked={quiz.multipleAttempts}
                 onChange={handleInputChange}
               />
               <label className="form-check-label" htmlFor="multipleAttempts">
@@ -227,7 +185,7 @@ const QuizEditor = () => {
             </div>
 
             {/* Attempts Allowed */}
-            {quizDetails.multipleAttempts && (
+            {quiz.multipleAttempts && (
               <div className="mb-3">
                 <label htmlFor="attemptsAllowed" className="form-label">
                   How Many Attempts
@@ -237,7 +195,7 @@ const QuizEditor = () => {
                   className="form-control"
                   id="attemptsAllowed"
                   name="attemptsAllowed"
-                  value={quizDetails.attemptsAllowed}
+                  value={quiz.maxAttempts}
                   onChange={handleInputChange}
                 />
               </div>
@@ -250,7 +208,7 @@ const QuizEditor = () => {
                 type="checkbox"
                 id="showCorrectAnswers"
                 name="showCorrectAnswers"
-                checked={quizDetails.showCorrectAnswers}
+                checked={quiz.showCorrectAnswers}
                 onChange={handleInputChange}
               />
               <label className="form-check-label" htmlFor="showCorrectAnswers">
@@ -264,7 +222,7 @@ const QuizEditor = () => {
                 type="checkbox"
                 id="oneQuestionAtATime"
                 name="oneQuestionAtATime"
-                checked={quizDetails.oneQuestionAtATime}
+                checked={quiz.oneQuestionAtATime}
                 onChange={handleInputChange}
               />
               <label className="form-check-label" htmlFor="oneQuestionAtATime">
@@ -278,7 +236,7 @@ const QuizEditor = () => {
                 type="checkbox"
                 id="webcamRequired"
                 name="webcamRequired"
-                checked={quizDetails.webcamRequired}
+                checked={quiz.webcamRequired}
                 onChange={handleInputChange}
               />
               <label className="form-check-label" htmlFor="webcamRequired">
@@ -292,7 +250,7 @@ const QuizEditor = () => {
                 type="checkbox"
                 id="lockQuestions"
                 name="lockQuestions"
-                checked={quizDetails.lockQuestions}
+                checked={quiz.lockQuestions}
                 onChange={handleInputChange}
               />
               <label className="form-check-label" htmlFor="lockQuestions">
@@ -310,7 +268,7 @@ const QuizEditor = () => {
                 className="form-control"
                 id="dueDate"
                 name="dueDate"
-                value={quizDetails.dueDate}
+                value={quiz.due}
                 onChange={handleInputChange}
               />
             </div>
@@ -324,7 +282,7 @@ const QuizEditor = () => {
                 className="form-control"
                 id="availableDate"
                 name="availableDate"
-                value={quizDetails.availableDate}
+                value={quiz.available}
                 onChange={handleInputChange}
               />
             </div>
@@ -338,7 +296,7 @@ const QuizEditor = () => {
                 className="form-control"
                 id="untilDate"
                 name="untilDate"
-                value={quizDetails.untilDate}
+                value={quiz.until}
                 onChange={handleInputChange}
               />
             </div>

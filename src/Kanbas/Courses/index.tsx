@@ -5,7 +5,7 @@ import CoursesNavigation from "./Navigation";
 import Modules from "./Modules";
 import Home from "./Home";
 import PeopleTable from "./People/Table";
-import QuizEditor from "./Quizzes/Editor";
+import EditExisting from "./Quizzes/EditExisting";
 import QuizList from "./Quizzes/List";
 import { Routes, Route, Navigate, useParams } from "react-router";
 
@@ -36,7 +36,7 @@ export default function Courses({ courses }: { courses: any[] }) {
               element={<AssignmentEditor />}
             />
             <Route path="Quizzes" element={<QuizList />} />
-            <Route path="Quizzes/:qid/Editor" element={<QuizEditor />} />
+            <Route path="Quizzes/:qid/Editor" element={<EditExisting />} />
             <Route path="People" element={<PeopleTable />} />
           </Routes>
         </div>

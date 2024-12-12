@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   FaEllipsisV,
   FaPlus,
@@ -27,9 +27,9 @@ interface Quiz {
   oneQuestionAtATime: boolean;
   webcamRequired: boolean;
   lockQuestions: boolean;
-  dueDate: string;
-  availableDate: string;
-  untilDate: string;
+  due: Date;
+  available: Date;
+  until: Date;
   published: boolean;
   points: number;
   numberOfQuestions: number;
@@ -64,9 +64,9 @@ const List: React.FC<ListProps> = ({ isStudent = false }) => {
       oneQuestionAtATime: true,
       webcamRequired: false,
       lockQuestions: false,
-      dueDate: "",
-      availableDate: "",
-      untilDate: "",
+      due: new Date("2020-01-01"),
+      available: new Date("2020-01-01"),
+      until: new Date("2020-01-01"),
       published: false,
       points: 0,
       numberOfQuestions: 0,
@@ -80,7 +80,6 @@ const List: React.FC<ListProps> = ({ isStudent = false }) => {
   const fetchQuizzes = async () => {
     const quizzes = await courseClient.findQuizzesForCourse(cid as string);
     setQuizzes(quizzes);
-    alert(quizzes.length);
   };
   useEffect(() => {
     fetchQuizzes();
@@ -141,9 +140,9 @@ const List: React.FC<ListProps> = ({ isStudent = false }) => {
   // Function to determine availability status
   const getAvailabilityStatus = (quiz: Quiz): string => {
     const now = new Date();
-    const availableDate = new Date(quiz.availableDate);
-    const untilDate = new Date(quiz.untilDate);
-    const dueDate = new Date(quiz.dueDate);
+    const availableDate = new Date(quiz.available);
+    const untilDate = new Date(quiz.until);
+    const dueDate = new Date(quiz.due);
 
     if (quiz.published) {
       if (now < availableDate) {
@@ -213,16 +212,13 @@ const List: React.FC<ListProps> = ({ isStudent = false }) => {
                 </td>
                 <td
                   style={{ cursor: "pointer", color: "blue" }}
-                  onClick={() =>
-                    navigate(`/Kanbas/Courses/${cid}/Quizzes/${quiz.id}`)
-                  }
                 >
-                  {quiz.title}
+                  <Link to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}/Editor`}>{quiz.title}</Link>
                 </td>
                 <td>{getAvailabilityStatus(quiz)}</td>
                 <td>
                   {quiz.dueDate
-                    ? new Date(quiz.dueDate).toLocaleDateString()
+                    ? new Date(quiz.due).toLocaleDateString()
                     : "N/A"}
                 </td>
                 <td>{quiz.points}</td>
