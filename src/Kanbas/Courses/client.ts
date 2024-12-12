@@ -51,6 +51,11 @@ export const createAssignmentForCourse = async (courseId: string, assignment: an
   return response.data;
 };
 
+export const findQuizzesForCourse = async (courseId: string) => {
+  const response = await axios.get(`${COURSES_API}/${courseId}/quizzes`);
+  return response.data;
+};
+
 export const findQuestionsForQuiz = async (quizId: string) => {
   const response = await axios.get(`${COURSES_API}/${quizId}/questions`);
   // console.log(JSON.stringify(response.data)+"1111111");

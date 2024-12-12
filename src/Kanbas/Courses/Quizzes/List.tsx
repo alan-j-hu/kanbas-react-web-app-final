@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   FaEllipsisV,
@@ -9,6 +9,7 @@ import {
   FaSort,
 } from "react-icons/fa";
 import { Button, Dropdown, Table } from "react-bootstrap";
+import * as courseClient from "../client";
 
 // Define the Quiz type
 interface Quiz {
@@ -20,7 +21,7 @@ interface Quiz {
   shuffleAnswers: boolean;
   timeLimit: number;
   multipleAttempts: boolean;
-  attemptsAllowed: number;
+  maxAttempts: number;
   showCorrectAnswers: boolean;
   accessCode: string;
   oneQuestionAtATime: boolean;
@@ -44,145 +45,7 @@ const List: React.FC<ListProps> = ({ isStudent = false }) => {
   const navigate = useNavigate();
 
   // sample quizzes
-  const [quizzes, setQuizzes] = useState<Quiz[]>([
-    {
-      id: "1",
-      title: "Sample Quiz 1",
-      description: "This is a sample quiz",
-      quizType: "GRADED_QUIZ",
-      assignmentGroup: "QUIZZES",
-      shuffleAnswers: false,
-      timeLimit: 20,
-      multipleAttempts: false,
-      attemptsAllowed: 1,
-      showCorrectAnswers: false,
-      accessCode: "",
-      oneQuestionAtATime: true,
-      webcamRequired: false,
-      lockQuestions: false,
-      dueDate: "2024-12-15T23:59:59Z",
-      availableDate: "2024-12-01T00:00:00Z",
-      untilDate: "2024-12-31T23:59:59Z",
-      published: true,
-      points: 10,
-      numberOfQuestions: 5,
-      score: isStudent ? 8 : undefined,
-    },
-    {
-      id: "2",
-      title: "Sample Quiz 2",
-      description: "Another sample quiz",
-      quizType: "PRACTICE_QUIZ",
-      assignmentGroup: "HOMEWORK",
-      shuffleAnswers: true,
-      timeLimit: 30,
-      multipleAttempts: true,
-      attemptsAllowed: 3,
-      showCorrectAnswers: true,
-      accessCode: "1234",
-      oneQuestionAtATime: false,
-      webcamRequired: true,
-      lockQuestions: true,
-      dueDate: "2024-12-20T23:59:59Z",
-      availableDate: "2024-12-05T00:00:00Z",
-      untilDate: "2025-01-05T23:59:59Z",
-      published: false,
-      points: 20,
-      numberOfQuestions: 10,
-      score: isStudent ? 15 : undefined,
-    },
-    {
-      id: "3",
-      title: "Introduction to JavaScript",
-      description: "Test your knowledge of JavaScript basics",
-      quizType: "GRADED_QUIZ",
-      assignmentGroup: "LECTURES",
-      shuffleAnswers: true,
-      timeLimit: 30,
-      multipleAttempts: true,
-      attemptsAllowed: 2,
-      showCorrectAnswers: false,
-      accessCode: "",
-      oneQuestionAtATime: false,
-      webcamRequired: false,
-      lockQuestions: false,
-      dueDate: "2024-12-25T23:59:59Z",
-      availableDate: "2024-12-10T00:00:00Z",
-      untilDate: "2025-01-01T23:59:59Z",
-      published: true,
-      points: 15,
-      numberOfQuestions: 10,
-    },
-
-    {
-      id: "4",
-      title: "History of Art",
-      description: "Quiz on Renaissance art movements",
-      quizType: "PRACTICE_QUIZ",
-      assignmentGroup: "PROJECTS",
-      shuffleAnswers: false,
-      timeLimit: 60,
-      multipleAttempts: false,
-      attemptsAllowed: 1,
-      showCorrectAnswers: true,
-      accessCode: "ARTLover24",
-      oneQuestionAtATime: true,
-      webcamRequired: true,
-      lockQuestions: true,
-      dueDate: "2025-01-15T23:59:59Z",
-      availableDate: "2024-12-20T00:00:00Z",
-      untilDate: "2025-01-20T23:59:59Z",
-      published: false,
-      points: 25,
-      numberOfQuestions: 8,
-    },
-
-    {
-      id: "5",
-      title: "Chemistry Fundamentals",
-      description: "Basic concepts of chemistry for beginners",
-      quizType: "GRADED_QUIZ",
-      assignmentGroup: "LABS",
-      shuffleAnswers: true,
-      timeLimit: 45,
-      multipleAttempts: true,
-      attemptsAllowed: 3,
-      showCorrectAnswers: false,
-      accessCode: "CHEM101",
-      oneQuestionAtATime: false,
-      webcamRequired: false,
-      lockQuestions: false,
-      dueDate: "2025-01-05T23:59:59Z",
-      availableDate: "2024-12-15T00:00:00Z",
-      untilDate: "2025-01-10T23:59:59Z",
-      published: true,
-      points: 20,
-      numberOfQuestions: 12,
-    },
-
-    {
-      id: "6",
-      title: "Python Programming",
-      description: "Quiz on Python programming concepts",
-      quizType: "PRACTICE_QUIZ",
-      assignmentGroup: "WORKSHOPS",
-      shuffleAnswers: false,
-      timeLimit: 50,
-      multipleAttempts: true,
-      attemptsAllowed: 5,
-      showCorrectAnswers: true,
-      accessCode: "",
-      oneQuestionAtATime: true,
-      webcamRequired: true,
-      lockQuestions: false,
-      dueDate: "2025-01-10T23:59:59Z",
-      availableDate: "2024-12-22T00:00:00Z",
-      untilDate: "2025-01-25T23:59:59Z",
-      published: true,
-      points: 30,
-      numberOfQuestions: 15,
-    },
-  ]);
+  const [quizzes, setQuizzes] = useState<any[]>([]);
 
   // Handler to add a new quiz
   const handleAddQuiz = () => {
@@ -195,7 +58,7 @@ const List: React.FC<ListProps> = ({ isStudent = false }) => {
       shuffleAnswers: false,
       timeLimit: 20,
       multipleAttempts: false,
-      attemptsAllowed: 1,
+      maxAttempts: 1,
       showCorrectAnswers: false,
       accessCode: "",
       oneQuestionAtATime: true,
@@ -213,6 +76,15 @@ const List: React.FC<ListProps> = ({ isStudent = false }) => {
     //if we cannot get the api url work in the end we should consider using/passing local data
     navigate(`/Kanbas/Courses/${cid}/Quizzes/${newQuiz.id}/editor`);
   };
+
+  const fetchQuizzes = async () => {
+    const quizzes = await courseClient.findQuizzesForCourse(cid as string);
+    setQuizzes(quizzes);
+    alert(quizzes.length);
+  };
+  useEffect(() => {
+    fetchQuizzes();
+  }, []);
 
   // Handler to delete a quiz
   const handleDeleteQuiz = (id: string) => {
