@@ -9,15 +9,19 @@ import {
   FaSort,
 } from "react-icons/fa";
 import { Button, Dropdown, Table } from "react-bootstrap";
+import {
+  findQuizzesForStudent,
+  findQuizzesForCourse,
+  startNewAttempt,
+} from "./client";
 import * as courseClient from "../client";
 
-// Define the Quiz type
 interface Quiz {
   id: string;
   title: string;
   description: string;
   quizType: string;
-  assignmentGroup: string;
+  assignmentGroup?: string;
   shuffleAnswers: boolean;
   timeLimit: number;
   multipleAttempts: boolean;
@@ -43,56 +47,42 @@ interface ListProps {
 const List: React.FC<ListProps> = ({ isStudent = false }) => {
   const { cid } = useParams<{ cid: string }>();
   const navigate = useNavigate();
-
-  // sample quizzes
-  const [quizzes, setQuizzes] = useState<any[]>([]);
-
-  // Handler to add a new quiz
-  const handleAddQuiz = () => {
-    const newQuiz: Quiz = {
-      id: (quizzes.length + 1).toString(),
-      title: "New Quiz",
-      description: "",
-      quizType: "GRADED_QUIZ",
-      assignmentGroup: "QUIZZES",
-      shuffleAnswers: false,
-      timeLimit: 20,
-      multipleAttempts: false,
-      maxAttempts: 1,
-      showCorrectAnswers: false,
-      accessCode: "",
-      oneQuestionAtATime: true,
-      webcamRequired: false,
-      lockQuestions: false,
-      due: new Date("2020-01-01"),
-      available: new Date("2020-01-01"),
-      until: new Date("2020-01-01"),
-      published: false,
-      points: 0,
-      numberOfQuestions: 0,
-      score: isStudent ? 0 : undefined,
-    };
-    setQuizzes((prev) => [...prev, newQuiz]);
-    //if we cannot get the api url work in the end we should consider using/passing local data
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/${newQuiz.id}/editor`);
-  };
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
 
   const fetchQuizzes = async () => {
-    const quizzes = await courseClient.findQuizzesForCourse(cid as string);
-    setQuizzes(quizzes);
+    try {
+      const quizzes = await courseClient.findQuizzesForCourse(cid as string);
+      console.log("Fetched quizzes:", quizzes);
+
+      // Map _id to id
+      const mappedQuizzes = quizzes.map((quiz: any) => ({
+        ...quiz,
+        id: quiz._id,
+      }));
+
+      console.log("Mapped quizzes with id:", mappedQuizzes); // Log mapped quizzes
+      setQuizzes(mappedQuizzes); // Set quizzes
+    } catch (error) {
+      console.error("Error fetching quizzes:", error);
+    }
   };
+
+
   useEffect(() => {
     fetchQuizzes();
   }, []);
 
-  // Handler to delete a quiz
+
+  const handleAddQuiz = () => {
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/new`);
+  };
+
   const handleDeleteQuiz = (id: string) => {
     if (window.confirm("Are you sure you want to delete this quiz?")) {
       setQuizzes((prev) => prev.filter((quiz) => quiz.id !== id));
     }
   };
 
-  // Handler to toggle publish status
   const handleTogglePublish = (id: string) => {
     setQuizzes((prev) =>
       prev.map((quiz) =>
@@ -101,91 +91,67 @@ const List: React.FC<ListProps> = ({ isStudent = false }) => {
     );
   };
 
-  // naviagte to editor with the current quiz data, if we cannot get url api done then we should pass locally
   const handleEditQuiz = (id: string) => {
     navigate(`/Kanbas/Courses/${cid}/Quizzes/${id}/editor`);
   };
 
-  // This is optional feature I haven't added any functions yet
-  const handleCopyQuiz = (id: string) => {
-    console.log("Copying quiz with id:", id);
-  };
-
-  // Handler for sorting quizzes
-  const handleSortQuizzes = (criteria: string) => {
-    let sortedQuizzes = [...quizzes];
-    switch (criteria) {
-      case "name":
-        sortedQuizzes.sort((a, b) => a.title.localeCompare(b.title));
-        break;
-      case "dueDate":
-        sortedQuizzes.sort(
-          (a, b) =>
-            new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
-        );
-        break;
-      case "availableDate":
-        sortedQuizzes.sort(
-          (a, b) =>
-            new Date(a.availableDate).getTime() -
-            new Date(b.availableDate).getTime()
-        );
-        break;
-      default:
-        break;
+  const handleStartQuiz = async (id: string) => {
+    try {
+      const attempt = await startNewAttempt(cid as string, id);
+      navigate(`/Kanbas/Courses/${cid}/Quizzes/${id}/attempt/${attempt.id}`);
+    } catch (error) {
+      console.error("Error starting quiz attempt:", error);
+      alert("Failed to start quiz. Please try again.");
     }
-    setQuizzes(sortedQuizzes);
   };
 
-  // Function to determine availability status
+  const handleSortQuizzes = (criteria: string) => {
+    const sorted = [...quizzes];
+    if (criteria === "title") {
+      sorted.sort((a, b) => a.title.localeCompare(b.title));
+    } else if (criteria === "dueDate") {
+      sorted.sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
+    }
+    setQuizzes(sorted);
+  };
+
   const getAvailabilityStatus = (quiz: Quiz): string => {
     const now = new Date();
     const availableDate = new Date(quiz.available);
     const untilDate = new Date(quiz.until);
-    const dueDate = new Date(quiz.due);
 
     if (quiz.published) {
       if (now < availableDate) {
-        return `Not available until ${availableDate.toLocaleDateString()}`;
-      } else if (now >= availableDate && now <= untilDate) {
-        return "Available";
-      } else if (now > untilDate) {
+        return `Not available until ${availableDate.toLocaleString()}`;
+      }
+      if (now > untilDate) {
         return "Closed";
       }
+      return "Available";
     }
     return "Unpublished";
   };
 
   return (
     <div className="container mt-4">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2>Quizzes</h2>
-        <Link className="btn btn-primary" to={`/Kanbas/Courses/${cid}/Quizzes/Editor`}>
-          <FaPlus className="me-2" />
-          Add Quiz
-        </Link>
-      </div>
-
+      <h2>{isStudent ? "Available Quizzes" : "Quizzes"}</h2>
+      {!isStudent && (
+        <Button variant="primary" onClick={handleAddQuiz} className="mb-3">
+          <FaPlus className="me-2" /> Add Quiz
+        </Button>
+      )}
       {quizzes.length === 0 ? (
         <div className="text-center">
-          <p>
-            No quizzes available. Click the "Add Quiz" button to create one.
-          </p>
-          <Link className="btn btn-primary" to={`/Kanbas/Courses/${cid}/Quizzes/Editor`}>
-            <FaPlus className="me-2" />
-            Add Quiz
-          </Link>
+          <p>No quizzes available.</p>
         </div>
       ) : (
         <Table striped bordered hover responsive>
           <thead>
             <tr>
-              <th>Publish</th>
               <th>Title</th>
-              <th>Availability</th>
+              <th>Status</th>
               <th>Due Date</th>
               <th>Points</th>
-              <th>Questions</th>
               {isStudent && <th>Score</th>}
               <th>Actions</th>
             </tr>
@@ -193,118 +159,40 @@ const List: React.FC<ListProps> = ({ isStudent = false }) => {
           <tbody>
             {quizzes.map((quiz) => (
               <tr key={quiz.id}>
-                <td className="text-center">
+                <td>
                   <span
-                    style={{ cursor: "pointer", fontSize: "1.5rem" }}
-                    onClick={() => handleTogglePublish(quiz.id)}
-                    title={quiz.published ? "Unpublish Quiz" : "Publish Quiz"}
+                    style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}
+                    onClick={() => {
+                      console.log(`Navigating to /Kanbas/Courses/${cid}/Quizzes/${quiz.id}/Preview`);
+                      navigate(`/Kanbas/Courses/${cid}/Quizzes/${quiz.id}/Preview`);
+                    }}
                   >
-                    {quiz.published ? (
-                      <span role="img" aria-label="Published">
-                        ✅
-                      </span>
-                    ) : (
-                      <span role="img" aria-label="Unpublished">
-                        🚫
-                      </span>
-                    )}
+                    {quiz.title}
                   </span>
                 </td>
-                <td
-                  style={{ cursor: "pointer", color: "blue" }}
-                >
-                  <Link to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}/Editor`}>{quiz.title}</Link>
-                </td>
                 <td>{getAvailabilityStatus(quiz)}</td>
-                <td>
-                  {quiz.dueDate
-                    ? new Date(quiz.due).toLocaleDateString()
-                    : "N/A"}
-                </td>
+                <td>{quiz.due ? new Date(quiz.due).toLocaleDateString() : "N/A"}</td>
                 <td>{quiz.points}</td>
-                <td>{quiz.numberOfQuestions}</td>
-                {isStudent && (
-                  <td>{quiz.score !== undefined ? quiz.score : "N/A"}</td>
-                )}
+                {isStudent && <td>{quiz.score ?? "N/A"}</td>}
                 <td>
-                  <Dropdown align="end">
-                    <Dropdown.Toggle variant="secondary" size="sm">
-                      <FaEllipsisV />
-                    </Dropdown.Toggle>
-
-                    <Dropdown.Menu>
-                      <Dropdown.Item onClick={() => handleEditQuiz(quiz.id)}>
-                        <FaEdit className="me-2" />
-                        Edit
-                      </Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleDeleteQuiz(quiz.id)}>
-                        <FaTrash className="me-2" />
-                        Delete
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        onClick={() => handleTogglePublish(quiz.id)}
-                      >
-                        {quiz.published ? (
-                          <>
-                            <span
-                              role="img"
-                              aria-label="Unpublish"
-                              className="me-2"
-                            >
-                              🚫
-                            </span>
-                            Unpublish
-                          </>
-                        ) : (
-                          <>
-                            <span
-                              role="img"
-                              aria-label="Publish"
-                              className="me-2"
-                            >
-                              ✅
-                            </span>
-                            Publish
-                          </>
-                        )}
-                      </Dropdown.Item>
-                      <Dropdown.Item onClick={() => handleCopyQuiz(quiz.id)}>
-                        <FaCopy className="me-2" />
-                        Copy
-                      </Dropdown.Item>
-                      <Dropdown.Divider />
-                      <Dropdown.Item as="div">
-                        <div className="d-flex align-items-center">
-                          <FaSort className="me-2" />
-                          Sort By:
-                          <Button
-                            variant="link"
-                            size="sm"
-                            className="ms-2"
-                            onClick={() => handleSortQuizzes("name")}
-                          >
-                            Name
-                          </Button>
-                          <Button
-                            variant="link"
-                            size="sm"
-                            className="ms-2"
-                            onClick={() => handleSortQuizzes("dueDate")}
-                          >
-                            Due Date
-                          </Button>
-                          <Button
-                            variant="link"
-                            size="sm"
-                            className="ms-2"
-                            onClick={() => handleSortQuizzes("availableDate")}
-                          >
-                            Available Date
-                          </Button>
-                        </div>
-                      </Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
+                  {isStudent ? null : (
+                    <Dropdown align="end">
+                      <Dropdown.Toggle variant="secondary" size="sm">
+                        <FaEllipsisV />
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => handleEditQuiz(quiz.id)}>
+                          <FaEdit className="me-2" /> Edit
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleDeleteQuiz(quiz.id)}>
+                          <FaTrash className="me-2" /> Delete
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleTogglePublish(quiz.id)}>
+                          {quiz.published ? "Unpublish" : "Publish"}
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  )}
                 </td>
               </tr>
             ))}

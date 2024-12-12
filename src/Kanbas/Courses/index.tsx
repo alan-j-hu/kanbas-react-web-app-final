@@ -8,12 +8,13 @@ import PeopleTable from "./People/Table";
 import EditExisting from "./Quizzes/EditExisting";
 import EditNew from "./Quizzes/EditNew";
 import QuizList from "./Quizzes/List";
+import QuizPreview from "./Quizzes/Preview";
 import { Routes, Route, Navigate, useParams } from "react-router";
 
 export default function Courses({ courses }: { courses: any[] }) {
   const { cid } = useParams();
   const course = courses.find((course) => course._id === cid);
-  console.log(cid);
+
   return (
     <div id="wd-courses">
       <h2 className="text-danger">
@@ -39,6 +40,10 @@ export default function Courses({ courses }: { courses: any[] }) {
             <Route path="Quizzes" element={<QuizList />} />
             <Route path="Quizzes/Editor" element={<EditNew />} />
             <Route path="Quizzes/:qid/Editor" element={<EditExisting />} />
+            <Route
+              path="Quizzes/:quizId/Preview"
+              element={<QuizPreview />}
+            />
             <Route path="People" element={<PeopleTable />} />
           </Routes>
         </div>
