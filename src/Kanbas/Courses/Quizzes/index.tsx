@@ -11,6 +11,7 @@ export default function QuizzesIndex() {
       <Route path="/" element={<List />} />
       <Route path="/:quizId/editor" element={<Editor />} />
       <Route path="/:quizId/questions" element={<QuestionsEditor />} />
+      <Route path="/:quizId/preview" element={<QuizPreview />} />
     </Routes>
   );
 }
