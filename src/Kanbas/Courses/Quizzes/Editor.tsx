@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import QuestionsEditor from "./QuestionsEditor";
+import QuestionEditor from "./QuestionEditor";
 
 const QuizEditor = () => {
   //sample data
@@ -21,9 +21,6 @@ const QuizEditor = () => {
     availableDate: "",
     untilDate: "",
   });
-
-  const [isQuestionsEditorVisible, setIsQuestionsEditorVisible] =
-    useState(false); // for control showing question editor
 
   // form update event handler
   const handleInputChange = (
@@ -52,13 +49,40 @@ const QuizEditor = () => {
     console.log("Edit canceled.");
   };
 
+  const [questions, setQuestions] = useState<any[]>([]);
+
   // WE WILL NEED TO REPLACE THIS NAVIGATION LINK METHOD TO API CALL METHODS
   // PASSING IN QUIZ ID
-  const handleEditQuestions = () => {
-    setIsQuestionsEditorVisible(true);
+  const handleNewQuestion = () => {
+    const newQuestion = {
+      _id: new Date().getTime().toString(),
+      title: "",
+      points: 0,
+      question: "",
+      kind: "MultipleChoice",
+      choices: [],
+      correct_answer: true,
+      correct_answers: []
+    };
+    setQuestions([...questions, newQuestion]);
   };
-  if (isQuestionsEditorVisible) {
-    return <QuestionsEditor />;
+
+  const onQuestionChange = (question: any) => {
+    const newQuestions = questions.map((q: any) => {
+      if (q._id === question._id) {
+        return question;
+      } else {
+        return q;
+      }
+    });
+    setQuestions(newQuestions);
+  };
+
+  const onQuestionDelete = (qid: string) => {
+    const newQuestions = questions.filter((q: any) => (
+      qid !== q._id
+    ));
+    setQuestions(newQuestions);
   }
 
   return (
@@ -342,19 +366,27 @@ const QuizEditor = () => {
               >
                 Cancel
               </button>
-              <button
-                type="button"
-                className="btn btn-info"
-                onClick={handleEditQuestions}
-              >
-                Edit Questions
-              </button>
             </div>
           </form>
         </div>
 
 
         <div className="tab-pane" id="quiz-questions">
+          <h1>Questions</h1>
+
+          <div>
+          {questions.map((question: any) => (
+            <QuestionEditor key={question._id} question={question} onChange={onQuestionChange} onDelete={onQuestionDelete}/>
+          ))}
+          </div>
+
+          <button
+            type="button"
+            className="btn btn-info"
+            onClick={handleNewQuestion}
+          >
+            New Question
+          </button>
         </div>
       </div>
     </div>
