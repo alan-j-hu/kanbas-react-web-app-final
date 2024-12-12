@@ -15,12 +15,12 @@ const QuestionEditor = ({
   const [currentQuestionType, setCurrentQuestionType] = useState<string | null>(
     null
   );
-  const [title, setTitle] = useState<string>(question.title);
-  const [points, setPoints] = useState<number>(question.points);
-  const [kind, setKind] = useState<string>(question.kind);
-  const [choices, setChoices] = useState<any[]>(question.choices);
-  const [correct_answer, setCorrect_answer] = useState<boolean>(question.correct_answer);
-  const [correct_answers, setCorrect_answers] = useState<any[]>(question.correct_answers);
+  const [title, setTitle] = useState<string>(question.title || "");
+  const [points, setPoints] = useState<number>(question.points || 0);
+  const [kind, setKind] = useState<string>(question.kind || "MultipleChoice");
+  const [choices, setChoices] = useState<any[]>(question.choices || []);
+  const [correctAnswer, setCorrectAnswer] = useState<boolean>(question.correctAnswer || true);
+  const [correctAnswers, setCorrectAnswers] = useState<any[]>(question.correctAnswers || []);
 
   const newQuestion = () => {
     return {
@@ -29,8 +29,8 @@ const QuestionEditor = ({
       points,
       kind,
       choices,
-      correct_answer,
-      correct_answers
+      correctAnswer,
+      correctAnswers
     };
   };
 
@@ -137,21 +137,85 @@ const QuestionEditor = ({
     );
   }
 
-  function RenderTrueFalse() {
+  function RenderTrueFalse({correctAnswer}: {correctAnswer: boolean}) {
     return (
       <div>
         <div className="form-check">
-          <input className="form-check-input" type="radio" name="true-false" id="answer-true" value="true" checked/>
+          <input className="form-check-input" type="radio" name="true-false" id="answer-true" value="true" checked={correctAnswer}/>
           <label className="form-check-label" htmlFor="answer-true">
             True
           </label>
         </div>
         <div className="form-check">
-          <input className="form-check-input" type="radio" name="true-false" id="answer-false" value="false"/>
+          <input className="form-check-input" type="radio" name="true-false" id="answer-false" value="false" checked={!correctAnswer}/>
           <label className="form-check-label" htmlFor="answer-false">
             False
           </label>
         </div>
+      </div>
+    );
+  }
+
+  function RenderFillInTheBlank({correctAnswers}: {correctAnswers: any[]}) {
+    function RenderBlank({
+        blank,
+      }: {
+        blank: any,
+      }) {
+      const [text, setText] = useState<string>(blank.text);
+
+      const handleTextChange = (e: any) => {
+        setText(e.target.value);
+        blank.text = e.target.value;
+      };
+
+      const onDelete = (cid: string) => {
+        const newCorrectAnswers = correctAnswers.filter((c: any) => c._id !== cid);
+        setCorrectAnswers(newCorrectAnswers);
+      };
+
+      return (
+        <div>
+          Blank
+          <input
+            type="text"
+            name="text"
+            className="form-control"
+            value={text}
+            onChange={handleTextChange}
+          />
+          <button
+            type="button"
+            className="btn btn-danger"
+            onClick={() => onDelete(blank._id)}
+          >
+            Delete Blank
+          </button>
+        </div>
+      );
+    }
+
+    const onAddBlank = () => {
+      const newBlank = {
+        _id: new Date().getTime().toString(),
+        text: "",
+        isCaseSensitive: false
+      };
+      setCorrectAnswers([...correctAnswers, newBlank]);
+    };
+
+    return (
+      <div>
+        {correctAnswers.map((answer: any) => {
+          return RenderBlank({blank: answer});
+        })}
+        <button
+          type="button"
+          className="btn btn-info"
+          onClick={onAddBlank}
+        >
+          Add Blank
+        </button>
       </div>
     );
   }
@@ -206,8 +270,8 @@ const QuestionEditor = ({
         </div>
 
         { kind === "MultipleChoice" ? <RenderMultipleChoice choices={choices} onChange={onChoicesChange}/>
-        : kind === "TrueFalse" ? <RenderTrueFalse/>
-        : "FillInTheBlank"}
+        : kind === "TrueFalse" ? <RenderTrueFalse correctAnswer={correctAnswer}/>
+        : <RenderFillInTheBlank correctAnswers={correctAnswers}/>}
       </form>
       <button
         type="button"
