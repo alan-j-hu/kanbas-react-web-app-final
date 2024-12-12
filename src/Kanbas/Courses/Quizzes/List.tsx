@@ -160,10 +160,10 @@ const List: React.FC<ListProps> = ({ isStudent = false }) => {
     <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h2>Quizzes</h2>
-        <Button variant="success" onClick={handleAddQuiz}>
+        <Link className="btn btn-primary" to={`/Kanbas/Courses/${cid}/Quizzes/Editor`}>
           <FaPlus className="me-2" />
           Add Quiz
-        </Button>
+        </Link>
       </div>
 
       {quizzes.length === 0 ? (
@@ -171,10 +171,10 @@ const List: React.FC<ListProps> = ({ isStudent = false }) => {
           <p>
             No quizzes available. Click the "Add Quiz" button to create one.
           </p>
-          <Button variant="primary" onClick={handleAddQuiz}>
+          <Link className="btn btn-primary" to={`/Kanbas/Courses/${cid}/Quizzes/Editor`}>
             <FaPlus className="me-2" />
             Add Quiz
-          </Button>
+          </Link>
         </div>
       ) : (
         <Table striped bordered hover responsive>

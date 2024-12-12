@@ -1,13 +1,52 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import QuestionEditor from "./QuestionEditor";
 
 const QuizEditor = ({quiz}: {quiz: any}) => {
+  const navigate = useNavigate();
+
+  const [title, setTitle] = useState<string>(quiz.title);
+  const [description, setDescription] = useState<string>(quiz.description);
+  const [quizType, setQuizType] = useState<string>(quiz.quizType);
+  const [assignmentGroup, setAssignmentGroup] = useState<string>(quiz.assignmentGroup);
+  const [shuffleAnswers, setShuffleAnswers] = useState<boolean>(quiz.shuffleAnswers);
+  const [timeLimit, setTimeLimit] = useState<number>(quiz.timeLimit);
+  const [multipleAttempts, setMultipleAttempts] = useState<boolean>(quiz.multipleAttempts);
+  const [maxAttempts, setMaxAttempts] = useState<number>(quiz.maxAttempts);
+  const [showCorrectAnswers, setShowCorrectAnswers] = useState<boolean>(quiz.showCorrectAnswers);
+  const [accessCode, setAccessCode] = useState<string>(quiz.accessCode);
+  const [oneQuestionAtATime, setOneQuestionAtATime] = useState<boolean>(quiz.oneQuestionAtATime);
+  const [webcamRequired, setWebcamRequired] = useState<boolean>(quiz.webcamRequired);
+  const [lockQuestions, setLockQuestions] = useState<boolean>(quiz.lockQuestions);
+  const [due, setDue] = useState<Date>(quiz.due);
+  const [available, setAvailable] = useState<Date>(quiz.available);
+  const [until, setUntil] = useState<Date>(quiz.until);
+  const [published, setPublished] = useState<boolean>(quiz.published);
+  const [points, setPoints] = useState<boolean>(quiz.points);
   const [questions, setQuestions] = useState<any[]>(quiz.questions);
+
+  const availableRef = useRef<HTMLInputElement>(null);
+  const dueRef = useRef<HTMLInputElement>(null);
+  const untilRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (availableRef.current !== null) {
+      availableRef.current.valueAsDate = new Date(available);
+    }
+    if (dueRef.current !== null) {
+      dueRef.current.valueAsDate = new Date(due);
+    }
+    if (untilRef.current !== null) {
+      untilRef.current.valueAsDate = new Date(until);
+    }
+  }, []);
 
   const handleInputChange = () => {};
   const handleSaveAndPublish = () => {};
   const handleSave = () => {};
-  const handleCancel = () => {};
+  const handleCancel = () => {
+    navigate(-1);
+  };
 
   // WE WILL NEED TO REPLACE THIS NAVIGATION LINK METHOD TO API CALL METHODS
   // PASSING IN QUIZ ID
@@ -82,7 +121,7 @@ const QuizEditor = ({quiz}: {quiz: any}) => {
                 className="form-control"
                 id="title"
                 name="title"
-                value={quiz.title}
+                value={title}
                 onChange={handleInputChange}
               />
             </div>
@@ -96,7 +135,7 @@ const QuizEditor = ({quiz}: {quiz: any}) => {
                 className="form-control"
                 id="description"
                 name="description"
-                value={quiz.description}
+                value={description}
                 onChange={handleInputChange}
               />
             </div>
@@ -110,7 +149,7 @@ const QuizEditor = ({quiz}: {quiz: any}) => {
                 className="form-select"
                 id="quizType"
                 name="quizType"
-                value={quiz.quizType}
+                value={quizType}
                 onChange={handleInputChange}
               >
                 <option value="GRADED_QUIZ">Graded Quiz</option>
@@ -129,7 +168,7 @@ const QuizEditor = ({quiz}: {quiz: any}) => {
                 className="form-select"
                 id="assignmentGroup"
                 name="assignmentGroup"
-                value={quiz.assignmentGroup}
+                value={assignmentGroup}
                 onChange={handleInputChange}
               >
                 <option value="QUIZZES">Quizzes</option>
@@ -146,7 +185,7 @@ const QuizEditor = ({quiz}: {quiz: any}) => {
                 type="checkbox"
                 id="shuffleAnswers"
                 name="shuffleAnswers"
-                checked={quiz.shuffleAnswers}
+                checked={shuffleAnswers}
                 onChange={handleInputChange}
               />
               <label className="form-check-label" htmlFor="shuffleAnswers">
@@ -164,7 +203,7 @@ const QuizEditor = ({quiz}: {quiz: any}) => {
                 className="form-control"
                 id="timeLimit"
                 name="timeLimit"
-                value={quiz.timeLimit}
+                value={timeLimit}
                 onChange={handleInputChange}
               />
             </div>
@@ -176,7 +215,7 @@ const QuizEditor = ({quiz}: {quiz: any}) => {
                 type="checkbox"
                 id="multipleAttempts"
                 name="multipleAttempts"
-                checked={quiz.multipleAttempts}
+                checked={multipleAttempts}
                 onChange={handleInputChange}
               />
               <label className="form-check-label" htmlFor="multipleAttempts">
@@ -195,7 +234,7 @@ const QuizEditor = ({quiz}: {quiz: any}) => {
                   className="form-control"
                   id="attemptsAllowed"
                   name="attemptsAllowed"
-                  value={quiz.maxAttempts}
+                  value={maxAttempts}
                   onChange={handleInputChange}
                 />
               </div>
@@ -208,7 +247,7 @@ const QuizEditor = ({quiz}: {quiz: any}) => {
                 type="checkbox"
                 id="showCorrectAnswers"
                 name="showCorrectAnswers"
-                checked={quiz.showCorrectAnswers}
+                checked={showCorrectAnswers}
                 onChange={handleInputChange}
               />
               <label className="form-check-label" htmlFor="showCorrectAnswers">
@@ -222,7 +261,7 @@ const QuizEditor = ({quiz}: {quiz: any}) => {
                 type="checkbox"
                 id="oneQuestionAtATime"
                 name="oneQuestionAtATime"
-                checked={quiz.oneQuestionAtATime}
+                checked={oneQuestionAtATime}
                 onChange={handleInputChange}
               />
               <label className="form-check-label" htmlFor="oneQuestionAtATime">
@@ -250,7 +289,7 @@ const QuizEditor = ({quiz}: {quiz: any}) => {
                 type="checkbox"
                 id="lockQuestions"
                 name="lockQuestions"
-                checked={quiz.lockQuestions}
+                checked={lockQuestions}
                 onChange={handleInputChange}
               />
               <label className="form-check-label" htmlFor="lockQuestions">
@@ -268,7 +307,7 @@ const QuizEditor = ({quiz}: {quiz: any}) => {
                 className="form-control"
                 id="dueDate"
                 name="dueDate"
-                value={quiz.due}
+                ref={dueRef}
                 onChange={handleInputChange}
               />
             </div>
@@ -282,7 +321,7 @@ const QuizEditor = ({quiz}: {quiz: any}) => {
                 className="form-control"
                 id="availableDate"
                 name="availableDate"
-                value={quiz.available}
+                ref={availableRef}
                 onChange={handleInputChange}
               />
             </div>
@@ -296,7 +335,7 @@ const QuizEditor = ({quiz}: {quiz: any}) => {
                 className="form-control"
                 id="untilDate"
                 name="untilDate"
-                value={quiz.until}
+                ref={untilRef}
                 onChange={handleInputChange}
               />
             </div>
