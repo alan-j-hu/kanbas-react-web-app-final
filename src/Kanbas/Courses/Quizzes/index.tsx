@@ -3,6 +3,7 @@ import { Routes, Route, useParams } from "react-router-dom";
 import List from "./List";
 import Editor from "./Editor";
 import QuestionsEditor from "./QuestionsEditor";
+import QuizPreview from "./Preview";
 
 export default function QuizzesIndex() {
   const { cid } = useParams(); // get course id
